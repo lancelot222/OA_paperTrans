@@ -1,0 +1,20 @@
+#inlineMarked{
+    display: none;
+    overflow-x: hidden;
+}
+
+#inlineMarked textarea{
+    width: 100%;
+    border: none;
+    outline: none;
+    background: none;
+    overflow-y: hidden;
+    border: 2px dashed #BBB;
+}
+
+#inlineMarked .preview{
+    width: 100%;
+    word-wrap: break-word;
+    word-break: break-all;
+    margin: auto;
+}

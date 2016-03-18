@@ -39,20 +39,39 @@ block content
                                         option 紧急
                             div.form-group.row
                                 label.col-sm-2.control-label(for='contentinput') 公告内容
-                                div#dropbox.col-sm-7
-                                    textarea#contentinput.form-control(required='required' rows='17' placeholder='请以markdown的格式书写内容，标题建议###' name='notice_content')
+                                div.dropbox.col-sm-7
+                                    textarea#contentinput.mkFa.form-control(oninput='mkFa2mkSon()' required='required' rows='17' placeholder='请以markdown的格式书写内容，标题建议###' name='notice_content')
+                                div.col-sm-3
+                                    a.marked-fancybox.btn.bg-olive(href='#inlineMarked' onclick='setTimeout("update()",50)') 使用对比预览
                         div.box-footer
                             div.row
                                 div.col-sm-offset-2.col-sm-7
                                     button.btn.btn-danger(type='submit') 确认更改并提交
+        div#inlineMarked
+            div.row
+                div.dropbox.editor-colum.col-sm-6
+                    textarea.mkSon.textinput(rows='35' oninput="update()" onscroll="this.rows++;") 请以markdown的格式书写内容，标题建议###
+                div.preview-column.col-sm-6
+                    div#markdown.preview
+                
+                    
 
 block headpart
-    link(rel='stylesheet' href='plugins/datatables/dataTables.bootstrap.css')
-
+    link(rel='stylesheet' href='/plugins/datatables/dataTables.bootstrap.css')
+    link(rel='stylesheet' href='/plugins/fancyBox/source/jquery.fancybox.css')
+    link(rel='stylesheet' href='/mypublic/stylesheets/inlineMarked.css')
+    link(rel='stylesheet' href='/mypublic/stylesheets/myMarkdown.css')
+    link(rel='stylesheet' href='/mypublic/google-code-prettify/tomorrow.css')
+    
 block scripts
-    script(src='plugins/datatables/jquery.dataTables.min.js')
-    script(src='plugins/datatables/dataTables.bootstrap.min.js')
-    script(src='plugins/filedrop/jquery.filedrop.js')
+    script(src='/plugins/datatables/jquery.dataTables.min.js')
+    script(src='/plugins/datatables/dataTables.bootstrap.min.js')
+    script(src='/plugins/filedrop/jquery.filedrop.js')
+    script(src='/plugins/fancyBox/source/jquery.fancybox.pack.js')
+    script(src='/mypublic/javascripts/marked.js')
+    //myMarkdown 
+    script(src='/mypublic/javascripts/myMarkdown.js')
+    script(src='/mypublic/google-code-prettify/prettify.js')
     
     script.
         $(document).ready( function () {
@@ -77,9 +96,10 @@ block scripts
             });
         } );
         
+    //上传模块
     script.
         $(function () {
-            $('#dropbox').filedrop({
+            $('.dropbox').filedrop({
                 paramname: 'filedrop',
                 maxfiles: 5,
                 maxfilesize: 5,
@@ -102,7 +122,45 @@ block scripts
                     if(file.type.substring(0,5) == "image"){
                         marklink = "!" + marklink;
                     }
-                    $('#contentinput').val($('#contentinput').val() + marklink);
+                    $('.mkFa').val($('#contentinput').val() + marklink);
+                    $('.mkSon').val( $('.mkFa').val() );
+                    update();
                 }
             });
         });
+
+    script.
+        $(document).ready(function () {
+            var width = window.innerWidth*0.65;
+            console.log(width);
+            $( ".marked-fancybox").fancybox({
+                helpers: {
+                    overlay: {
+                        locked: false
+                    }
+                },
+                autoSize: false,
+                width: width
+            });
+        });
+
+    script.
+        function update(){
+            $("#inlineMarked .preview").html( marked($("#inlineMarked .textinput").val()) );
+            
+            var $imgs = $('div#markdown img');
+            $imgs.attr('class', 'img-responsive pad');
+        
+            // 代码高亮
+            var $code = $('div#markdown pre');
+            $code.attr('class', 'prettyprint linenums');
+            prettyPrint();
+        
+            var $table = $('div#markdown table');
+            $table.attr('class', 'table table-bordered table-hover table-striped');
+            $(".mkFa").val( $(".mkSon").val() );
+        }
+        
+        function mkFa2mkSon() {
+            $(".mkSon").val( $(".mkFa").val() );
+        }
