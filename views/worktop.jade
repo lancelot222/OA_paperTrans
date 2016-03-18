@@ -39,7 +39,7 @@ block content
                                         option 紧急
                             div.form-group.row
                                 label.col-sm-2.control-label(for='contentinput') 公告内容
-                                div.col-sm-7
+                                div#dropbox.col-sm-7
                                     textarea#contentinput.form-control(required='required' rows='17' placeholder='请以markdown的格式书写内容，标题建议###' name='notice_content')
                         div.box-footer
                             div.row
@@ -52,6 +52,7 @@ block headpart
 block scripts
     script(src='plugins/datatables/jquery.dataTables.min.js')
     script(src='plugins/datatables/dataTables.bootstrap.min.js')
+    script(src='plugins/filedrop/jquery.filedrop.js')
     
     script.
         $(document).ready( function () {
@@ -75,3 +76,33 @@ block scripts
                 order: [[3, 'desc']]
             });
         } );
+        
+    script.
+        $(function () {
+            $('#dropbox').filedrop({
+                paramname: 'filedrop',
+                maxfiles: 5,
+                maxfilesize: 5,
+                url: "/api/filedrop",
+                error: function (err, file) {
+                    switch(err) {
+                        case 'BrowserNotSupported':
+                            alert('浏览器不支持此功能！');
+                            break;
+                        case 'TooManyFiles':
+                            alert('一次上传文件过多，同时不能超过5个！');
+                            break;
+                        case 'FileTooLarge':
+                            alert('文件过大，每个文件最大5mb！');
+                            break;
+                    }
+                },
+                uploadFinished: function(i, file, response, time) {
+                    var marklink = "[" + file.name + "](" + response.src + ")\n";
+                    if(file.type.substring(0,5) == "image"){
+                        marklink = "!" + marklink;
+                    }
+                    $('#contentinput').val($('#contentinput').val() + marklink);
+                }
+            });
+        });

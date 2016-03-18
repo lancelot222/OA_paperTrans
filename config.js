@@ -8,6 +8,7 @@ module.exports = {
     tmpUploadDir: './public/mypublic/uploads/',
     logoStoreDir: '/mypublic/uploads/logoups/',
     backStoreDir: '/mypublic/uploads/backups/',
+    dropStoreDir: '/mypublic/uploads/filedrop/',
 
     sessionConfig: {
         secret: 'keyboard cat',
