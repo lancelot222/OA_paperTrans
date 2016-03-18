@@ -1,0 +1,44 @@
+#markdown{
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom: 60px;
+}
+
+#markdown hr{
+    margin: 10px 0 20px;
+    height: 3px;
+    border: none;
+    background-color: #ddd;
+    background-image: repeating-linear-gradient(-45deg, #fff, #fff 4px, transparent 4px, transparent 8px);
+}
+
+#markdown h1,h2,h3,h4,h5,h6{
+    margin: 50px auto 10px;
+}
+
+#markdown img{
+    margin: 10px auto 10px;
+    border: 2px solid #dddddd;
+}
+
+#markdown table{
+    width: auto;
+    border-collapse: collapse;
+    margin: 0 auto 0;
+}
+
+#markdown table th{
+    text-align:center;
+    border-bottom-width: 3px;
+    border-bottom-color: rgb(221, 221, 221);
+    border-top: solid 1px rgb(221, 221, 221);
+    border-left: solid 1px rgb(221, 221, 221);
+    border-right: solid 1px rgb(221, 221, 221);
+}
+
+#markdown table td{
+    text-align:center;
+    border: solid 1px rgb(221, 221, 221);
+    padding-left: 20px;
+    padding-right: 20px;
+}

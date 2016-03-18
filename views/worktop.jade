@@ -1,0 +1,77 @@
+extends ./template/index
+
+block content
+    section.content
+        div.nav-tabs-custom
+            ul.nav.nav-tabs
+                li.active
+                    a(href="#tab_1" data-toggle="tab") 待处理工作
+                li
+                    a(href="#tab_2" data-toggle="tab") 发起申请
+                li
+                    a(href="#tab_3" data-toggle="tab") 发起公告
+            div.tab-content
+                div#tab_1.tab-pane.active
+                    table#not_done_table.table.table-bordered.table-hover.dataTable(role="grid" aria-describedby="not_done_table_info" width="100%")
+                        thead
+                            tr
+                                th.category(width="10%")
+                                th.brief(width="35%")
+                                th.status(width="10%")
+                                th.startDate(width="20%")
+                                th.priority(width="10%")
+                                th.schedule(width="15%")
+                div#tab_2.tab-pane
+                    p some thing here too
+                div#tab_3.tab-pane
+                    form.form-horizontal(action="/notice_upload" method="post")
+                        div.box-body
+                            div.form-group.row
+                                label.col-sm-2.control-label(for='titleinput') 公告标题
+                                div.col-sm-7
+                                    input#titleinput.form-control(placeholder='建议用《》括起' name='notice_title' required='required')
+                            div.form-group.row
+                                label.col-sm-2.control-label(for='categoryinput') 公告类别
+                                div.col-sm-2
+                                    select#categoryinput.form-control(name='notice_category')
+                                        option 注意
+                                        option 重要
+                                        option 紧急
+                            div.form-group.row
+                                label.col-sm-2.control-label(for='contentinput') 公告内容
+                                div.col-sm-7
+                                    textarea#contentinput.form-control(required='required' rows='17' placeholder='请以markdown的格式书写内容，标题建议###' name='notice_content')
+                        div.box-footer
+                            div.row
+                                div.col-sm-offset-2.col-sm-7
+                                    button.btn.btn-danger(type='submit') 确认更改并提交
+
+block headpart
+    link(rel='stylesheet' href='plugins/datatables/dataTables.bootstrap.css')
+
+block scripts
+    script(src='plugins/datatables/jquery.dataTables.min.js')
+    script(src='plugins/datatables/dataTables.bootstrap.min.js')
+    
+    script.
+        $(document).ready( function () {
+            $('#not_done_table').DataTable({
+                ajax: {
+                    url: '/api/not_done_data',
+                    dataSrc: 'data'
+                },
+                columns: [
+                    {data: 'category', title: '类别'},
+                    {data: 'brief',    title: '概要'},
+                    {data: 'status',   title: '状态'},
+                    {data: 'startDate',title: '发起日期'},
+                    {data: 'priority', title: '优先级'},
+                    {data: 'schedule', title: '进度'}
+                ],
+                language: {
+                    url: '/mypublic/others/chinese.json'
+                },
+                autoWidth: false,
+                order: [[3, 'desc']]
+            });
+        } );

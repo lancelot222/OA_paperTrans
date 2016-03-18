@@ -1,0 +1,144 @@
+doctype html
+html
+    head
+        meta(charset='utf-8')
+        title 公文流转系统 | 注册
+        meta(content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport')
+        link(rel='stylesheet' href='bootstrap/css/bootstrap.min.css')
+        link(rel='stylesheet' href='font-awesome/css/font-awesome.css')
+        link(rel='stylesheet' href='mypublic/stylesheets/SourceSansPro.css')
+        link(rel='stylesheet' href='ionicons/css/ionicons.min.css')
+        link(rel='stylesheet' href='dist/css/AdminLTE.min.css')
+        link(rel='stylesheet' href='plugins/iCheck/square/blue.css')
+    body.hold-transition.register-page
+        div.register-box
+            div.register-logo
+                a(href='#')
+                    b 公文流转
+            div.register-box-body
+                if registerfailed == 'no'
+                    p#registerMsg.login-box-msg 注册一个新用户
+                else
+                    p#registerMsg.login-box-msg(style='color:#dd4b39') 邮箱已被注册
+                form(action='/register' method='POST' name='regform')
+                    div.form-group.has-feedback
+                        input#nickname.form-control(type='text' placeholder='Full name' autofocus='autofocus' name='nickname' onblur='checkNick()')
+                        span.glyphicon.glyphicon-user.form-control-feedback
+                    div.form-group.has-feedback
+                        input#username.form-control(type='email' placeholder='E-mail' name='username' onblur='checkEmail()')
+                        span.glyphicon.glyphicon-envelope.form-control-feedback
+                    div.form-group.has-feedback
+                        input#password.form-control(type='password' placeholder='Password' name='password')
+                        span.glyphicon.glyphicon-lock.form-control-feedback
+                    div.form-group.has-feedback
+                        input#repassword.form-control(type='password' placeholder='Retype password' name='repassword' onblur='checkPassword()')
+                        span.glyphicon.glyphicon-log-in.form-control-feedback
+                    div.row
+                        div.col-xs-8
+                            div.checkbox.icheck
+                                label
+                                    input#acceptXXX(type='checkbox' name='acceptXXX')
+                                    |  接受《XXX协议》
+                        div.col-xs-4
+                            button.btn.btn-primary.btn-block.btn-flat(type='submit' onclick='return check()') 注册
+                    div.text-center
+                        p - OR -
+                    a.text-center(href='/login') 我有可用账号 点击登陆
+
+        script(src='mypublic/javascripts/jquery.min.js')
+        script(src='bootstrap/js/bootstrap.min.js')
+        script(src='plugins/iCheck/icheck.min.js')
+        script.
+            $(function () {
+                $('input').iCheck({
+                    checkboxClass: 'icheckbox_square-blue',
+                    radioClass: 'iradio_square-blue',
+                    increaseArea: '20%'
+                });
+            });
+        script.
+            function checkPassword(){
+                var pass = document.getElementById('password');
+                var repass = document.getElementById('repassword');
+                var msg  = document.getElementById('registerMsg');
+                var ok = true;
+                if(pass.value != repass.value){
+                    msg.innerHTML = '两次密码不一致，请重新输入';
+                    ok = false;
+                }
+                if(document.getElementById('password').value.length == 0){
+                    msg.innerHTML = '密码不能为空，请重新输入';
+                    ok = false;
+                }
+                var pattern = /^[0-9A-Za-z_]{6,15}$/;
+                if(!pattern.test(document.getElementById('password').value)){
+                    msg.innerHTML = '密码应由6到15位数字、英文字母与下划线组成';
+                    ok = false;
+                }
+                if(!ok){
+                    msg.style.color = '#dd4b39';
+                    pass.value = '';
+                    pass.focus();
+                    repass.value = '';
+                    pass.parentNode.className = 'form-group has-error';
+                    repass.parentNode.className = 'form-group has-error';
+                    return false
+                }
+                pass.parentNode.className = 'form-group has-feedback';
+                repass.parentNode.className = 'form-group has-feedback';
+                msg.innerHTML = '密码格式验证正确';
+                msg.style.color = '#444';
+                return true;
+            }
+            function checkEmail() {
+                var username = document.getElementById('username');
+                var msg  = document.getElementById('registerMsg');
+                var pattern = /^([\.a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
+                if (!pattern.test(username.value)) {  
+                    msg.innerHTML = '邮箱格式有误，例:OA_filehandle@oa.com';
+                    msg.style.color = '#dd4b39';
+                    username.value = '';
+                    username.focus();
+                    username.parentNode.className = 'form-group has-error';
+                    return false;  
+                }
+                username.parentNode.className = 'form-group has-feedback';
+                msg.innerHTML = '邮箱格式验证正确';
+                msg.style.color = '#444';
+                return true;
+            }
+            function checkNick() {
+                var nickname = document.getElementById('nickname');
+                var msg  = document.getElementById('registerMsg');
+                var pattern = /^[0-9A-Za-z_ ]{3,20}$/;
+                if(!pattern.test(nickname.value)) {
+                    msg.innerHTML = '用户名应有3到20位英文字母与空格组成';
+                    msg.style.color = '#dd4b39';
+                    nickname.value = '';
+                    nickname.focus();
+                    nickname.parentNode.className = 'form-group has-error';
+                    return false;
+                }
+                msg.innerHTML = '用户名格式验证正确';
+                msg.style.color = '#444';
+                nickname.parentNode.className = 'form-group has-feedback';
+                return true;
+            }
+            function checkAccept() {
+                var acc = document.getElementById('acceptXXX');
+                var msg  = document.getElementById('registerMsg');
+                if(!acc.checked){
+                    msg.innerHTML = '请先阅读《XXX协议》并勾选同意后再行注册';
+                    msg.style.color = '#dd4b39';
+                    return false;
+                }
+                msg.innerHTML = '已同意《XXX协议》';
+                msg.style.color = '#444';
+                return true;
+            }
+        script.
+            function check(){
+                if(checkAccept() && checkNick() && checkEmail() && checkPassword())
+                    return true;
+                return false;
+            }

@@ -1,0 +1,79 @@
+extends layout
+
+block body
+    div.wrapper
+        header.main-header
+            a.logo(href="/")
+                span.logo-mini OA
+                span.logo-lg 
+                    b 公文流转
+            nav.navbar.navbar-static-top(role="navigation")
+                a.sidebar-toggle(href="#" data-toggle="offcanvas" role="button")
+                    span.sr-only Toggle navigation
+                div.navbar-custom-menu
+                    ul.nav.navbar-nav
+                        li
+                            a(href='/logout')
+                                i.fa.fa-sign-out
+                                |  退出登陆
+        aside.main-sidebar
+            section.sidebar
+                a(href='/about')
+                    div.user-panel
+                        div.pull-left.image
+                            img.img-circle(src='#{logopath}')
+                        div.pull-left.info
+                            p #{nickname}
+                            span
+                                i.fa.fa-circle.text-success 
+                                |  在线
+                form.sidebar-form(action='#' method='get')
+                    div.input-group
+                        input.form-control(type="text" name="q" placeholder="搜索...")
+                        span.input-group-btn
+                            button#search-btn.btn.btn-flat(type="submit" name="search") 
+                                i.fa.fa-search
+                ul.sidebar-menu
+                    li.header HEADER
+                    li#worktop(name='tobeActive')
+                        a(href='/') 
+                            i.fa.fa-desktop 
+                            span  工作台
+                    li#notice(name='tobeActive')
+                        a(href='/notice') 
+                            i.fa.fa-newspaper-o
+                            span  公告
+                    li#approve(name='tobeActive') 
+                        a(href='#') 
+                            i.fa.fa-check  
+                            span  审批
+                    li#archive(name='tobeActive')
+                        a(href='#') 
+                            i.fa.fa-folder  
+                            span  归档
+                    li.treeview#realtools
+                        a(href='#') 
+                            i.fa.fa-th  
+                            span  实用工具 
+                            i.fa.fa-angle-left.pull-right 
+                        ul.treeview-menu
+                            li#checking-in-out(name='tobeActive')
+                                a(href='#') 考勤
+                            li#salary(name='tobeActive')
+                                a(href='#') 薪资查询
+                            li#talent-archive(name='tobeActive')
+                                a(href='#') 人才库
+                            li#setting(name='tobeActive')
+                                a(href='/setting') Profile 设置
+        div.content-wrapper
+            block content            
+    
+    script.
+        var tobeActives = document.getElementsByName('tobeActive');
+        for(var idx = 0; idx < tobeActives.length; ++idx)
+            if( '#{active}' == tobeActives[idx].id){
+                tobeActives[idx].setAttribute('class', 'active');
+                if(tobeActives[idx].parentNode.parentNode.id == 'realtools'){
+                    document.getElementById('realtools').setAttribute('class', 'active');
+                }
+            }

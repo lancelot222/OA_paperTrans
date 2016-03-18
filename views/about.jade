@@ -1,0 +1,65 @@
+extends ./template/index
+
+block content
+    section.content
+        div.box.box-widget.widget-user
+            div.widget-user-header.bg-black(style="background: url('#{backpath}') center center;")
+                h3 #{nickname}
+                h5 #{position}
+            div.widget-user-image
+                img.img-circle(src="#{logopath}")
+            div.box-footer
+                div.row
+                    div.col-sm-4.border-right
+                        div.description-block
+                            h5.description-header 110
+                            span.description-text Commits
+                    div.col-sm-4.border-right
+                        div.description-block
+                            h5.description-header 54
+                            span.description-text Create
+                    div.col-sm-4
+                        div.description-block
+                            h5.description-header 3
+                            span.description-text Finish
+                br
+                div#profile
+                    div.row
+                        div.col-xs-6
+                            h3 个人信息
+                            hr
+                            span!=personinfo
+                        div.col-xs-6
+                            h3 主要工作
+                            hr
+                            span!=mainwork
+                    br
+                    div.row
+                        div.col-xs-6
+                            h3 部组工作
+                            hr
+                            span!=teamwork
+                        div.col-xs-6
+                            h3 技能清单
+                            hr
+                            span!=skilllist
+
+block headpart
+    style(type='text/css').
+        #profile{
+            margin-left: 15px;
+            margin-right:15px
+        }
+        #profile hr{
+            margin-top: 5px;
+            margin-bottom: 10px
+        }
+        #profile li{
+            margin-left: -40px;
+        }
+        #profile h3{
+            text-align:center
+        }
+        #profile ul{
+            margin-left: 30%;
+        }

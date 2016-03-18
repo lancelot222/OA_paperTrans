@@ -1,0 +1,24 @@
+extends ./template/index
+
+block content
+    section.content
+        div.nav-tabs-custom
+            ul.nav.nav-tabs
+                li.active
+                    a(href="#tab_1" data-toggle="tab") 公告
+            div.tab-content
+                div#tab_1.tab-pane.active
+                    div
+                        h1(width="100%" align="center")!=notice_title
+                    div#markdown!=notice_content
+
+block headpart
+    link(rel='stylesheet' href='/mypublic/stylesheets/myMarkdown.css')
+    link(rel='stylesheet' href='/mypublic/google-code-prettify/tomorrow.css')
+    link(rel='stylesheet' href='/plugins/fancyBox/source/jquery.fancybox.css')
+    
+block scripts
+    script(src='/mypublic/javascripts/myMarkdown.js')
+    script(src='/mypublic/google-code-prettify/prettify.js')
+    script(src='/plugins/fancyBox/lib/jquery.mousewheel-3.0.6.pack.js')
+    script(src='/plugins/fancyBox/source/jquery.fancybox.pack.js')

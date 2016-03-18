@@ -1,0 +1,41 @@
+extends ./template/index
+
+block content
+    section.content
+            div.box.box-primary
+                div.box-header.with-border
+                    h6.box-title(style='font-size:14px;font-weight:normal') 更改个人主页的信息
+                form.form-horizontal(action="/setting_upload" enctype="multipart/form-data" method="post")
+                    div.box-body
+                        div.form-group.row
+                            label.col-sm-2.control-label(for='positioninput') 我的职位
+                            div.col-sm-7
+                                input#positioninput.form-control(placeholder='#{position}' value='#{position}' name='position')
+                        div.form-group.row
+                            label.col-sm-2.control-label(for='personinfoarea') 个人信息
+                            div.col-sm-7
+                                textarea#personinfoarea.form-control(rows='5' placeholder='#{personinfo}' name='personinfo') #{personinfo}
+                        div.form-group.row
+                            label.col-sm-2.control-label(for='mainworkarea') 主要工作
+                            div.col-sm-7
+                                textarea#markdownarea.form-control(rows='5' placeholder='#{mainwork}' name='mainwork') #{mainwork}
+                        div.form-group.row
+                            label.col-sm-2.control-label(for='teamworkarea') 部组工作
+                            div.col-sm-7
+                                textarea#teamworkarea.form-control(rows='5' placeholder='#{teamwork}' name='teamwork') #{teamwork}
+                        div.form-group.row
+                            label.col-sm-2.control-label(for='skilllistarea') 技能清单
+                            div.col-sm-7
+                                textarea#skilllistarea.form-control(rows='7' placeholder='#{skilllist}' name='skilllist') #{skilllist}
+                        div.form-group.row
+                            label.col-sm-2.control-label(for='logoinput') 我的头像
+                            div.col-sm-7
+                                input#logoinput(type='file' name='logoup' style='padding-top:7px' accept="image/png, image/jpg, image/jpeg")
+                        div.form-group.row
+                            label.col-sm-2.control-label(for='backinput') 背景图片
+                            div.col-sm-7
+                                input#logoinput(type='file' name='backup' style='padding-top:7px' accept="image/png, image/jpg, image/jpeg")
+                    div.box-footer
+                        div.row
+                            div.col-sm-offset-2.col-sm-7
+                                button.btn.btn-danger(type='submit') 确认更改并提交

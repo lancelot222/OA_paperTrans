@@ -1,0 +1,68 @@
+extends layout
+
+block body
+    div.wrapper
+        header.main-header
+            a.logo(href="#")
+                span.logo-mini OA
+                span.logo-lg 
+                    b 公文流转
+            nav.navbar.navbar-static-top(role="navigation")
+                a.sidebar-toggle(href="#" data-toggle="offcanvas" role="button")
+                    span.sr-only Toggle navigation
+                div.navbar-custom-menu
+                    ul.nav.navbar-nav
+                        li
+                            a(href='/logout')
+                                i.fa.fa-sign-out
+                                |  退出登陆
+        aside.main-sidebar
+            section.sidebar
+                div.user-panel
+                    div.pull-left.image
+                        img.img-circle(src='mypublic/images/man.png')
+                    div.pull-left.info
+                        p #{nickname}
+                        a(href='#')
+                            i.fa.fa-circle.text-success 
+                            |  在线
+                form.sidebar-form(action='#' method='get')
+                    div.input-group
+                        input.form-control(type="text" name="q" placeholder="搜索...")
+                        span.input-group-btn
+                            button#search-btn.btn.btn-flat(type="submit" name="search") 
+                                i.fa.fa-search
+                ul.sidebar-menu
+                    li.header HEADER
+                    li.active 
+                        a(href='#') 
+                            i.fa.fa-desktop 
+                            span  工作台
+                    li 
+                        a(href='#') 
+                            i.fa.fa-newspaper-o
+                            span  公告
+                    li 
+                        a(href='#') 
+                            i.fa.fa-check  
+                            span  审批
+                    li 
+                        a(href='#') 
+                            i.fa.fa-folder  
+                            span  归档
+                    li.treeview
+                        a(href='#') 
+                            i.fa.fa-th  
+                            span  实用工具 
+                            i.fa.fa-angle-left.pull-right 
+                        ul.treeview-menu
+                            li 
+                                a(href='#') 考勤
+                            li 
+                                a(href='#') 薪资查询
+                            li 
+                                a(href='#') 人才库
+                            li 
+                                a(href='#') 工作历程
+        div.content-wrapper
+            block content            

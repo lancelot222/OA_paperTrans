@@ -1,0 +1,43 @@
+extends ./template/index
+
+block content
+    section.content
+        div.nav-tabs-custom
+            ul.nav.nav-tabs
+                li.active
+                    a(href="#tab_1" data-toggle="tab") 公告
+            div.tab-content
+                div#tab_1.tab-pane.active
+                    table#notice_table.table.table-bordered.table-hover.dataTable(role="grid" aria-describedby="not_done_table_info" width="100%")
+                        thead
+                            tr
+                                th.category(width="10%")
+                                th.brief(width="70%")
+                                th.startDate(width="20%")
+
+block headpart
+    link(rel='stylesheet' href='plugins/datatables/dataTables.bootstrap.css')
+
+block scripts
+    script(src='plugins/datatables/jquery.dataTables.min.js')
+    script(src='plugins/datatables/dataTables.bootstrap.min.js')
+    
+    script.
+        $(document).ready( function () {
+            $('#notice_table').DataTable({
+                ajax: {
+                    url: '/api/notice_data',
+                    dataSrc: 'data'
+                },
+                columns: [
+                    {data: 'category', title: '类别'},
+                    {data: 'title',    title: '标题'},
+                    {data: 'startDate',title: '发起日期'}
+                ],
+                language: {
+                    url: '/mypublic/others/chinese.json'
+                },
+                autoWidth: false,
+                order: [[2, 'desc']]
+            });
+        } );
