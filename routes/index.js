@@ -185,4 +185,12 @@ router.post('/setting_upload', loginfilter, function(req, res, next){
     });
 });
 
+router.get('/tableDesign', function(req, res, next){
+    res.render('tableDesign', {
+        nickname: req.session.nickname,
+        logopath: req.session.logopath,
+        active: 'tableDesign'
+    });
+});
+
 module.exports = router;
