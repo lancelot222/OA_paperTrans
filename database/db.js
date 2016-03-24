@@ -52,7 +52,16 @@ var noticesSchema   = new Schema({
     startDate:  String
 });
 
+var tablesSchema    = new Schema({
+    tableID:    String,
+    title:      String,
+    category:   String,
+    detail:     String,
+    link:       String
+});
+
 exports.loginchecks = mongoose.model('loginchecks', loginSchema);
 exports.profiles    = mongoose.model('profiles',    profileSchema);
 exports.processes   = mongoose.model('processes',   processesSchema);
 exports.notices     = mongoose.model('notices',     noticesSchema);
+exports.tables      = mongoose.model('tables',      tablesSchema);

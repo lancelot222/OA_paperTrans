@@ -3,6 +3,7 @@ var profiles    = require('../database/db').profiles;
 var loginchecks = require('../database/db').loginchecks;
 var processes   = require('../database/db').processes;
 var notices     = require('../database/db').notices;
+var tables      = require('../database/db').tables;
 var marked      = require( "marked" );
 var formidable  = require('formidable'), util = require('util');
 var uuid    = require('node-uuid');
@@ -190,6 +191,26 @@ router.get('/tableDesign', function(req, res, next){
         nickname: req.session.nickname,
         logopath: req.session.logopath,
         active: 'tableDesign'
+    });
+});
+
+router.post('/tableDesign', function(req, res, next){
+    console.log('--------------------------- tableDesign in');
+    console.log(req.body.tableTitle);
+    console.log(req.body.tableCategary);
+    console.log(req.body.tableContent);
+    console.log('--------------------------- tableDesign out');
+
+    var str_id  = uuid.v1();
+    var table  = new tables({
+        tableID:    str_id,
+        title:      req.body.tableTitle,
+        category:   req.body.tableCategary,
+        detail:     req.body.tableContent,
+        link:       '<a href="/table/' + str_id + '">发起申请</a>'
+    });
+    table.save(function(err){
+        res.redirect('/tableDesign');
     });
 });
 

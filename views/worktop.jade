@@ -22,7 +22,12 @@ block content
                                 th.priority(width="10%")
                                 th.schedule(width="15%")
                 div#tab_2.tab-pane
-                    p some thing here too
+                    table#startapprove_table.table.table-bordered.table-hover.dataTable(role="grid" aria-describedby="startapprove_table_info" width="100%")
+                        thead
+                            tr
+                                th.category(width="10%")
+                                th.title(width="60%")
+                                th.link(width="30%")
                 div#tab_3.tab-pane
                     form.form-horizontal(action="/notice_upload" method="post")
                         div.box-body
@@ -93,6 +98,21 @@ block scripts
                 },
                 autoWidth: false,
                 order: [[3, 'desc']]
+            });
+            $("#startapprove_table").DataTable({
+                ajax: {
+                    url: '/api/approve_table',
+                    dataSrc: 'data'
+                },
+                columns: [
+                    {data: 'category', title: '类别'},
+                    {data: 'title',    title: '申请表单名'},
+                    {data: 'link',     title: '操作'}
+                ],
+                language: {
+                    url: '/mypublic/others/chinese.json'
+                },
+                autoWidth: false,
             });
         } );
         

@@ -5,7 +5,7 @@ block content
             div.box.box-primary
                 div.box-header.with-border
                     h6.box-title(style='font-size:14px;font-weight:normal') 更改个人主页的信息
-                form.form-horizontal(action="/setting_upload" method="post")
+                form.form-horizontal
                     div.box-body
                         div.form-group.row
                             label.col-sm-2.control-label(for='titleinput') 表单名称
@@ -23,39 +23,39 @@ block content
                         div.form-group.row
                             label.col-sm-2.control-label(for='designinput') 表单内容
                             div.col-sm-5
-                                div#designinput.form-control(width='100%')
+                                div#designinput.form-control(width='100%' ondrop="drop(event)" ondragover="allowDrop(event)")
                             div.col-sm-5
                                 div(width='100%' style="border-left: 2px dashed #BBB;")
-                                    div.form-group.row
+                                    div#daterange.form-group.row(draggable="true" ondragstart="drag(event, 'daterange')")
                                         label.col-sm-3.control-label 时间范围
                                         div.col-sm-9
                                             div.input-group
                                                 div.input-group-addon
                                                     i.fa.fa-calendar
-                                                input.form-control(type="text" name="daterange")
-                                    div.form-group.row
+                                                input.form-control.daterange(type="text")
+                                    div#datepicker.form-group.row(draggable="true" ondragstart="drag(event, 'datepicker')")
                                         label.col-sm-3.control-label 日期选取
                                         div.col-sm-9
                                             div.input-group
                                                 div.input-group-addon
                                                     i.fa.fa-calendar
                                                 input.form-control(type="text" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask name='datepicker')
-                                    div.form-group.row
+                                    div#textinline.form-group.row(draggable="true" ondragstart="drag(event, 'textinline')")
                                         label.col-sm-3.control-label 文本框
                                         div.col-sm-9
                                             input.form-control
-                                    div.form-group.row
+                                    div#textarea.form-group.row(draggable="true" ondragstart="drag(event, 'textarea')")
                                         label.col-sm-3.control-label 多行文本
                                         div.col-sm-9
                                             textarea.form-control
-                                    div.form-group.row
+                                    div#dropmenu.form-group.row(draggable="true" ondragstart="drag(event, 'dropmenu')")
                                         label.col-sm-3.control-label 下拉菜单
                                         div.col-sm-9
                                             select.form-control
                                                 option 选项 1
                                                 option 选项 2
                                                 option 选项 3
-                                    div.form-group.row
+                                    div#checkbox.form-group.row(draggable="true" ondragstart="drag(event, 'checkbox')")
                                         label.col-sm-3.control-label 复选框
                                         div.col-sm-9
                                             div.checkbox
@@ -70,8 +70,8 @@ block content
                                                 label
                                                     input(type='checkbox') 
                                                     | 选项 3    
-                                    div.form-group.row
-                                        label.col-sm-3.control-label 复选框
+                                    div#radio.form-group.row(draggable="true" ondragstart="drag(event, 'radio')")
+                                        label.col-sm-3.control-label 单选框
                                         div.col-sm-9
                                             div.radio
                                                 label
@@ -88,9 +88,11 @@ block content
                     div.box-footer
                         div.row
                             div.col-sm-offset-2.col-sm-7
-                                button.btn.btn-danger(type='submit') 确认提交
+                                button#wkaka.btn.btn-danger(onclick='sendTable()') 确认提交
+
 block headpart
     link(rel='stylesheet' href='/plugins/daterangepicker/daterangepicker-bs3.css')
+    link(rel='stylesheet' href='/mypublic/stylesheets/tableDesign.css')
 
 block scripts
     script(src='/plugins/daterangepicker/moment.js')
@@ -98,12 +100,42 @@ block scripts
     script(src='/plugins/input-mask/jquery.inputmask.js')
     script(src='/plugins/input-mask/jquery.inputmask.date.extensions.js')
     script(src='/plugins/input-mask/jquery.inputmask.extensions.js')
+    script(src='/mypublic/javascripts/uuid.js')
     script.
+        function allowDrop(ev){
+            ev.preventDefault();
+        }
+        function drag(ev, type){
+            ev.dataTransfer.setData("Text",type);
+        }
+        function drop(ev){
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("Text");
+            var node = document.getElementById(data).cloneNode(true);
+            node.removeAttribute("id");
+            node.removeAttribute("draggable");
+            node.removeAttribute("ondragstart");
+            if(ev.target.id == "designinput")
+                ev.target.appendChild(node);
+        }
         $(document).ready(function() {
-            $("input[name='daterange']").daterangepicker();
+            $(".daterange").daterangepicker();
             
             $("[date-mask]").inputmask("dd/mm/yyyy", {"placeholder": "dd/mm/yyyy"});
             $("[data-mask]").inputmask();
             
             $("#designinput").css('height', window.innerHeight*0.7);
         });
+        function sendTable(){
+            $("#designinput input,select,textarea").each(function() {
+                $(this).attr("name", Math.uuid(20));
+            });
+            
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("POST","/tableDesign",true);
+            xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+            var strSend = "tableTitle=" + $("#titleinput").val()
+                        + "&tableCategary=" + $("#categoryinput").val()
+                        + "&tableContent=" + $("#designinput").html();
+            xmlhttp.send(strSend);
+        }

@@ -1,6 +1,7 @@
 var express = require('express');
 var processes   = require('../database/db').processes;
-var notices = require('../database/db').notices;
+var notices     = require('../database/db').notices;
+var tables      = require('../database/db').tables;
 var formidable  = require('formidable'), util = require('util');
 var uuid    = require('node-uuid');
 var fs      = require("fs");
@@ -14,6 +15,14 @@ router.get('/not_done_data', function(req, res, next){
              .exec(function(err, docs){
                  res.json({data: docs});
              });
+});
+
+router.get('/approve_table', function(req, res, next){
+    tables.find({})
+          .select('-_id -detail')
+          .exec(function(err, docs){
+              res.json({data: docs});
+          });
 });
 
 router.get('/notice_data', function(req, res, next){
