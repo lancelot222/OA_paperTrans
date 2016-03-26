@@ -33,12 +33,14 @@ var profileSchema = new Schema({
 });
 
 var processesSchema = new Schema({
-    paperID:    String,
+    processID:  String,
+    tableID:    String,
     category:   String,
-    detail:     String,
-    brief:      String,
+    data:       Object,
+    title:      String,
     status:     String,
     startDate:  String,
+    startUser:  String,
     priority:   String,
     schedule:   String,
     nowOperator:String

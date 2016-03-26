@@ -68,6 +68,55 @@ router.post('/notice_upload', loginfilter, function(req, res, next){
     });
 });
 
+router.get('/approve/:id', loginfilter, function(req, res, next){
+    processes.findOne({processID: req.params.id}, function(err, process_doc){
+        if(process_doc){
+            tables.findOne({tableID: process_doc.tableID}, function(err, table_doc){
+                if(table_doc){
+                    res.render('approve_detail', {
+                        nickname:   req.session.nickname,
+                        logopath:   req.session.logopath,
+                        active:     'approve',
+                        table_title:table_doc.title,
+                        table_content:  table_doc.detail,
+                        data:       JSON.stringify(process_doc.data)
+                    });
+                }
+            });
+        }else
+            res.json({result: 'Nothing founded'});
+    });
+});
+
+router.post('/approve_upload', loginfilter, function(req, res, next){
+    var str_id  = uuid.v1();
+
+    var process = new processes({
+        processID:  str_id,
+        tableID:    req.session.table_tableID,
+        category:   req.session.table_category,
+        data:       req.body,                                 // 等下再做数据
+        title:      '<a href="/approve/' + str_id + '">' + req.session.table_title + '</a>',
+        status:     "进入流程",                              //这里要做
+        startDate:  moment().format('YYYY-MM-DD HH:mm:ss'),
+        startUser:  req.session.username,
+        priority:   "低",                                   //流程
+        schedule:   "0%",                                   //控
+        nowOperator:req.session.username                    //制
+    });
+    process.save(function(err){
+        res.redirect('/');
+    })
+});
+
+router.get('/approve', loginfilter, function(req, res, next){
+    res.render('approve', {
+        nickname: req.session.nickname,
+        logopath: req.session.logopath,
+        active: 'approve'
+    });
+})
+
 // 展示关于页面
 router.get('/about', loginfilter, function(req, res, next) {
 
@@ -211,6 +260,26 @@ router.post('/tableDesign', function(req, res, next){
     });
     table.save(function(err){
         res.redirect('/tableDesign');
+    });
+});
+
+router.get('/table/:id', loginfilter, function(req, res, next){
+    tables.findOne({tableID: req.params.id}, function(err, doc){
+        if(doc){
+            req.session.table_title     = doc.title;
+            req.session.table_category  = doc.category;
+            req.session.table_tableID   = doc.tableID;
+
+            res.render('table_detail', {
+                nickname: req.session.nickname,
+                logopath: req.session.logopath,
+                active:   'worktop',
+                table_title:    doc.title,
+                table_category: doc.category,
+                table_content:  doc.detail
+            });
+        }else
+            res.json({result: 'Nothing founded'});
     });
 });
 

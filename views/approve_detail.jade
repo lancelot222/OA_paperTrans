@@ -1,0 +1,42 @@
+extends ./template/index
+
+block content
+    section.content
+            div.box.box-primary
+                div.box-header.with-border
+                    h6.box-title(style='font-size:14px;font-weight:normal') #{table_title}
+                form.form-horizontal
+                    div.box-body
+                        div#table_content!=table_content
+                div.box-footer
+                    div.row
+                        div.col-sm-offset-2.col-sm-2
+                            button.btn.btn-success(type='submit') 同意申请
+                        div.col-sm-2
+                            button.btn.btn-danger(type='submit') 否决申请
+                    
+block headpart
+    link(rel='stylesheet' href='/mypublic/stylesheets/myMarkdown.css')
+    link(rel='stylesheet' href='/mypublic/google-code-prettify/tomorrow.css')
+    link(rel='stylesheet' href='/plugins/fancyBox/source/jquery.fancybox.css')
+
+block scripts
+    script(src='/plugins/fancyBox/source/jquery.fancybox.pack.js')
+    script(src='/mypublic/javascripts/marked.js')
+    //myMarkdown 
+    script(src='/mypublic/javascripts/myMarkdown.js')
+    script(src='/mypublic/google-code-prettify/prettify.js')
+    
+    script.
+        $(document).ready(function() {
+            var data = !{data};
+            for (var key in data) {
+                $("[name='" + key + "']").val(data[key]);
+                if(data[key] == 'on'){
+                    $("[name='" + key + "']").attr('checked', true);
+                }
+            }
+            $("#table_content input,textarea").attr('readonly', 'readonly');
+            $("#table_content select").attr('disabled', 'disabled')
+            $("#table_content input[type='checkbox']").attr("onclick", "return false;")
+        });

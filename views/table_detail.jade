@@ -1,0 +1,67 @@
+extends ./template/index
+
+block content
+    section.content
+            div.box.box-primary
+                div.box-header.with-border
+                    h6.box-title(style='font-size:14px;font-weight:normal') #{table_title}
+                form.form-horizontal(action="/approve_upload" method="POST")
+                    div.box-body
+                        div!=table_content
+                    div.box-footer
+                        div.row
+                            div.col-sm-offset-2.col-sm-7
+                                button.btn.btn-danger(type='submit') 提交申请
+                                
+block headpart
+    link(rel='stylesheet' href='/plugins/daterangepicker/daterangepicker-bs3.css')
+    
+block scripts
+    script(src='/plugins/daterangepicker/moment.js')
+    script(src='/plugins/daterangepicker/daterangepicker.js')
+    script(src='/plugins/input-mask/jquery.inputmask.js')
+    script(src='/plugins/input-mask/jquery.inputmask.date.extensions.js')
+    script(src='/plugins/input-mask/jquery.inputmask.extensions.js')
+    script(src='/plugins/filedrop/jquery.filedrop.js')
+    
+    script.
+        $(document).ready(function() {
+            $(".daterange").daterangepicker();
+            
+            $("[date-mask]").inputmask("dd/mm/yyyy", {"placeholder": "dd/mm/yyyy"});
+            $("[data-mask]").inputmask();
+        });
+        
+    script.
+        $(function () {
+            $('textarea').each(function(){
+                var theName = $(this).attr('name');
+                $(this).filedrop({
+                    paramname: 'filedrop',
+                    maxfiles: 5,
+                    maxfilesize: 5,
+                    url: "/api/filedrop",
+                    error: function (err, file) {
+                        switch(err) {
+                            case 'BrowserNotSupported':
+                                alert('浏览器不支持此功能！');
+                                break;
+                            case 'TooManyFiles':
+                                alert('一次上传文件过多，同时不能超过5个！');
+                                break;
+                            case 'FileTooLarge':
+                                alert('文件过大，每个文件最大5mb！');
+                                break;
+                        }
+                    },
+                    uploadFinished: function(i, file, response, time) {
+                        var marklink = "[" + file.name + "](" + response.src + ")\n";
+                        if(file.type.substring(0,5) == "image"){
+                            marklink = "!" + marklink;
+                        }
+                        var targetTextarea = $("textarea[name="+"'"+theName+"'"+"]" );
+                        targetTextarea.val( targetTextarea.val() + marklink);
+                    }
+                });
+            });
+        });

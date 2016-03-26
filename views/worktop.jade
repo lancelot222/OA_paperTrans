@@ -5,7 +5,7 @@ block content
         div.nav-tabs-custom
             ul.nav.nav-tabs
                 li.active
-                    a(href="#tab_1" data-toggle="tab") 待处理工作
+                    a(href="#tab_1" data-toggle="tab") 待处理申请
                 li
                     a(href="#tab_2" data-toggle="tab") 发起申请
                 li
@@ -16,7 +16,7 @@ block content
                         thead
                             tr
                                 th.category(width="15%")
-                                th.brief(width="30%")
+                                th.title(width="30%")
                                 th.status(width="10%")
                                 th.startDate(width="20%")
                                 th.priority(width="10%")
@@ -87,7 +87,7 @@ block scripts
                 },
                 columns: [
                     {data: 'category', title: '类别'},
-                    {data: 'brief',    title: '概要'},
+                    {data: 'title',    title: '申请表单名'},
                     {data: 'status',   title: '状态'},
                     {data: 'startDate',title: '发起日期'},
                     {data: 'priority', title: '优先级'},
@@ -153,7 +153,7 @@ block scripts
         $(document).ready(function () {
             var width = window.innerWidth*0.65;
             console.log(width);
-            $( ".marked-fancybox").fancybox({
+            $(".marked-fancybox").fancybox({
                 helpers: {
                     overlay: {
                         locked: false

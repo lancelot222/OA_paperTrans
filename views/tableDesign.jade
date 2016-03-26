@@ -28,38 +28,38 @@ block content
                                 div#designinput.form-control(width='100%' ondrop="drop(event)" ondragover="allowDrop(event)")
                             div.col-sm-5
                                 div(width='100%' style="border-left: 2px dashed #BBB;")
-                                    div#daterange.form-group.row(draggable="true" ondragstart="drag(event, 'daterange')")
+                                    div#daterange.form-group.row(name="daterange" draggable="true" ondragstart="drag(event, 'daterange')")
                                         label.col-sm-3.control-label 时间范围
                                         div.col-sm-9
                                             div.input-group
                                                 div.input-group-addon
                                                     i.fa.fa-calendar
                                                 input.form-control.daterange(type="text")
-                                    div#datepicker.form-group.row(draggable="true" ondragstart="drag(event, 'datepicker')")
+                                    div#datepicker.form-group.row(name="datepicker" draggable="true" ondragstart="drag(event, 'datepicker')")
                                         label.col-sm-3.control-label 日期选取
                                         div.col-sm-9
                                             div.input-group
                                                 div.input-group-addon
                                                     i.fa.fa-calendar
                                                 input.form-control(type="text" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask name='datepicker')
-                                    div#textinline.form-group.row(draggable="true" ondragstart="drag(event, 'textinline')")
+                                    div#textinline.form-group.row(name="textinline" draggable="true" ondragstart="drag(event, 'textinline')")
                                         label.col-sm-3.control-label 文本框
                                         div.col-sm-9
                                             input.form-control
-                                    div#textarea.form-group.row(draggable="true" ondragstart="drag(event, 'textarea')")
+                                    div#textarea.form-group.row(name="textarea" draggable="true" ondragstart="drag(event, 'textarea')")
                                         label.col-sm-3.control-label 多行文本
                                         div.col-sm-9
                                             textarea.form-control
-                                    div#dropmenu.form-group.row(draggable="true" ondragstart="drag(event, 'dropmenu')")
+                                    div#dropmenu.form-group.row(name="dropmenu" draggable="true" ondragstart="drag(event, 'dropmenu')")
                                         label.col-sm-3.control-label 下拉菜单
-                                        div.col-sm-9
+                                        div#isdropmenu.col-sm-9
                                             select.form-control
                                                 option 选项 1
                                                 option 选项 2
                                                 option 选项 3
-                                    div#checkbox.form-group.row(draggable="true" ondragstart="drag(event, 'checkbox')")
+                                    div#checkbox.form-group.row(name="checkbox" draggable="true" ondragstart="drag(event, 'checkbox')")
                                         label.col-sm-3.control-label 复选框
-                                        div.col-sm-9
+                                        div#ischeckbox.col-sm-9
                                             div.checkbox
                                                 label
                                                     input(type='checkbox') 
@@ -72,9 +72,9 @@ block content
                                                 label
                                                     input(type='checkbox') 
                                                     | 选项 3    
-                                    div#radio.form-group.row(draggable="true" ondragstart="drag(event, 'radio')")
+                                    div#radio.form-group.row(name="radio" draggable="true" ondragstart="drag(event, 'radio')")
                                         label.col-sm-3.control-label 单选框
-                                        div.col-sm-9
+                                        div#isradio.col-sm-9
                                             div.radio
                                                 label
                                                     input(type='radio' name='radio') 
@@ -87,11 +87,34 @@ block content
                                                 label
                                                     input(type='radio' name='radio') 
                                                     | 选项 3    
-                    div.box-footer
-                        div.row
-                            div.col-sm-offset-2.col-sm-7
-                                button#wkaka.btn.btn-danger(onclick='sendTable()') 确认提交
-
+                div.box-footer
+                    div.row
+                        div.col-sm-offset-2.col-sm-7
+                            button#wkaka.btn.btn-danger(onclick='sendTable()') 确认提交
+    div#labelEditPopover
+        div#popover-head.hide 编辑属性
+        div#popover-content.hide
+            div.form-horizonta
+                div
+                    label.control-label 表项名称
+                    input.form-control(type='text' id='namevalue' placeholder='请输入此表项名称' autofocus='autofocus')
+                hr(style='margin:5px auto 5px')
+            button.btn.btn-primary(type='button' onclick='namePopOk()') 确定
+            button.btn.btn-danger(type='button' style='float:right' onclick='closePop()') 取消
+            
+    div#plentyEditPopover
+        div#popover-head.hide 编辑属性
+        div#popover-content.hide
+            div
+                label.control-label 表项名称
+                input.form-control(type='text' id='namevalue' placeholder='请输入此表项名称' autofocus='autofocus')
+            div
+                label.control-label 选项设置(一行对应一项)
+                textarea.form-control(rows='6' id='contentvalue')
+            hr(style='margin:5px auto 5px')
+            button.btn.btn-primary(type='button' onclick='plentyPopOk()') 确定
+            button.btn.btn-danger(type='button' style='float:right' onclick='closePop()') 取消
+    
 block headpart
     link(rel='stylesheet' href='/plugins/daterangepicker/daterangepicker-bs3.css')
     link(rel='stylesheet' href='/mypublic/stylesheets/tableDesign.css')
@@ -103,41 +126,4 @@ block scripts
     script(src='/plugins/input-mask/jquery.inputmask.date.extensions.js')
     script(src='/plugins/input-mask/jquery.inputmask.extensions.js')
     script(src='/mypublic/javascripts/uuid.js')
-    script.
-        function allowDrop(ev){
-            ev.preventDefault();
-        }
-        function drag(ev, type){
-            ev.dataTransfer.setData("Text",type);
-        }
-        function drop(ev){
-            ev.preventDefault();
-            var data = ev.dataTransfer.getData("Text");
-            var node = document.getElementById(data).cloneNode(true);
-            node.removeAttribute("id");
-            node.removeAttribute("draggable");
-            node.removeAttribute("ondragstart");
-            if(ev.target.id == "designinput")
-                ev.target.appendChild(node);
-        }
-        $(document).ready(function() {
-            $(".daterange").daterangepicker();
-            
-            $("[date-mask]").inputmask("dd/mm/yyyy", {"placeholder": "dd/mm/yyyy"});
-            $("[data-mask]").inputmask();
-            
-            $("#designinput").css('height', window.innerHeight*0.7);
-        });
-        function sendTable(){
-            $("#designinput input,select,textarea").each(function() {
-                $(this).attr("name", Math.uuid(20));
-            });
-            
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.open("POST","/tableDesign",true);
-            xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-            var strSend = "tableTitle=" + $("#titleinput").val()
-                        + "&tableCategary=" + $("#categoryinput").val()
-                        + "&tableContent=" + $("#designinput").html();
-            xmlhttp.send(strSend);
-        }
+    script(src='/mypublic/javascripts/tableDesign.js')
