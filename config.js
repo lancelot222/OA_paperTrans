@@ -19,6 +19,5 @@ module.exports = {
     faviconPath: './public/mypublic/images/favicon.ico',
 
     port: 3000,
-    env: process.env.NODE_ENV || 'production'  // 目前没使用
-
+    env: process.env.NODE_ENV || 'production'   // 目前没使用
 };

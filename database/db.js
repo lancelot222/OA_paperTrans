@@ -58,6 +58,7 @@ var tablesSchema    = new Schema({
     tableID:    String,
     title:      String,
     category:   String,
+    priority:   String,
     detail:     String,
     link:       String
 });

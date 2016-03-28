@@ -90,7 +90,7 @@ router.get('/approve/:id', loginfilter, function(req, res, next){
 
 router.post('/approve_upload', loginfilter, function(req, res, next){
     var str_id  = uuid.v1();
-
+    
     var process = new processes({
         processID:  str_id,
         tableID:    req.session.table_tableID,
@@ -100,7 +100,7 @@ router.post('/approve_upload', loginfilter, function(req, res, next){
         status:     "进入流程",                              //这里要做
         startDate:  moment().format('YYYY-MM-DD HH:mm:ss'),
         startUser:  req.session.username,
-        priority:   "低",                                   //流程
+        priority:   req.session.table_priority,
         schedule:   "0%",                                   //控
         nowOperator:req.session.username                    //制
     });
@@ -247,6 +247,7 @@ router.post('/tableDesign', function(req, res, next){
     console.log('--------------------------- tableDesign in');
     console.log(req.body.tableTitle);
     console.log(req.body.tableCategary);
+    console.log(req.body.tablePriority);
     console.log(req.body.tableContent);
     console.log('--------------------------- tableDesign out');
 
@@ -255,6 +256,7 @@ router.post('/tableDesign', function(req, res, next){
         tableID:    str_id,
         title:      req.body.tableTitle,
         category:   req.body.tableCategary,
+        priority:   req.body.tablePriority,
         detail:     req.body.tableContent,
         link:       '<a href="/table/' + str_id + '">发起申请</a>'
     });
@@ -269,6 +271,7 @@ router.get('/table/:id', loginfilter, function(req, res, next){
             req.session.table_title     = doc.title;
             req.session.table_category  = doc.category;
             req.session.table_tableID   = doc.tableID;
+            req.session.table_priority  = doc.priority;
 
             res.render('table_detail', {
                 nickname: req.session.nickname,

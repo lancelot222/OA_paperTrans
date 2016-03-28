@@ -118,6 +118,7 @@ function sendTable(){
     xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
     var strSend = "tableTitle=" + $("#titleinput").val()
                 + "&tableCategary=" + $("#categoryinput").val()
+                + "&tablePriority=" + $("#priorityinput").val()
                 + "&tableContent=" + $("#designinput").html();
     xmlhttp.send(strSend);
 }
