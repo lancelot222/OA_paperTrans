@@ -10,20 +10,20 @@ var config  = require('../config');
 var router  = express.Router();
 
 router.get('/not_done_data', function(req, res, next){
-    processes.find({ $or: [{nowOperator:req.session.username},
+    /*processes.find({ $or: [{nowOperator:req.session.username},
                            {startUser:req.session.username}]})
              .select('-_id')
              .exec(function(err, docs){
                  res.json({data: docs});
-             });
+             });*/
 });
 
 router.get('/approve_data', function(req, res, next){
-    processes.find({nowOperator:req.session.username})
+    /*processes.find({nowOperator:req.session.username})
              .select('-_id')
              .exec(function(err, docs){
                  res.json({data: docs});
-             });
+             });*/
 });
 
 router.get('/approve_table', function(req, res, next){

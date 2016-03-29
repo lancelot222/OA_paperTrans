@@ -29,7 +29,8 @@ var profileSchema = new Schema({
     mainwork:   String,
     teamwork:   String,
     skilllist:  String,
-    backpath:   { type: String, default: config.defaultBackpath }
+    backpath:   { type: String, default: config.defaultBackpath },
+    logopath:   { type: String, default: config.defaultLogopath },
 });
 
 var processesSchema = new Schema({
@@ -58,7 +59,6 @@ var tablesSchema    = new Schema({
     tableID:    String,
     title:      String,
     category:   String,
-    priority:   String,
     detail:     String,
     link:       String
 });

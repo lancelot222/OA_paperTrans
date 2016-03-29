@@ -90,7 +90,7 @@ router.get('/approve/:id', loginfilter, function(req, res, next){
 
 router.post('/approve_upload', loginfilter, function(req, res, next){
     var str_id  = uuid.v1();
-    
+
     var process = new processes({
         processID:  str_id,
         tableID:    req.session.table_tableID,
@@ -123,7 +123,7 @@ router.get('/about', loginfilter, function(req, res, next) {
     var rmd = function(doc) {
         res.render('about', {
             nickname:   req.session.nickname,
-            position:   doc.position,
+            position:   config.positionJson[doc.position],
             personinfo: marked(doc.personinfo),
             mainwork:   marked(doc.mainwork),
             teamwork:   marked(doc.teamwork),
@@ -157,7 +157,7 @@ router.get('/setting', loginfilter, function(req, res, next){
             logopath:   req.session.logopath,
             active:     'setting',
             // 以下是setting展示，用以更改参考 markdown原文
-            position:   doc.position,
+            position:   config.positionJson[doc.position],
             personinfo: doc.personinfo,
             mainwork:   doc.mainwork,
             teamwork:   doc.teamwork,
@@ -196,6 +196,7 @@ router.post('/setting_upload', loginfilter, function(req, res, next){
             var newLogoPos = form.uploadDir + 'logoups/' + strsLogo[strsLogo.length-1];
             fs.renameSync(files.logoup.path, newLogoPos);
             loginJson.logopath = config.logoStoreDir + strsLogo[strsLogo.length-1];
+            profileJson.logopath = loginJson.logopath;
             req.session.logopath = loginJson.logopath;
         }else
             fs.unlink(files.logoup.path);
@@ -247,7 +248,6 @@ router.post('/tableDesign', function(req, res, next){
     console.log('--------------------------- tableDesign in');
     console.log(req.body.tableTitle);
     console.log(req.body.tableCategary);
-    console.log(req.body.tablePriority);
     console.log(req.body.tableContent);
     console.log('--------------------------- tableDesign out');
 
@@ -256,14 +256,22 @@ router.post('/tableDesign', function(req, res, next){
         tableID:    str_id,
         title:      req.body.tableTitle,
         category:   req.body.tableCategary,
-        priority:   req.body.tablePriority,
         detail:     req.body.tableContent,
         link:       '<a href="/table/' + str_id + '">发起申请</a>'
     });
     table.save(function(err){
-        res.redirect('/tableDesign');
+        console.log(err);
     });
 });
+
+router.get('/workflowDesign', function(req, res, next){
+    res.render('workflowDesign', {
+        nickname: req.session.nickname,
+        logopath: req.session.logopath,
+        active: 'workflowDesign'
+    });
+});
+
 
 router.get('/table/:id', loginfilter, function(req, res, next){
     tables.findOne({tableID: req.params.id}, function(err, doc){
@@ -283,6 +291,15 @@ router.get('/table/:id', loginfilter, function(req, res, next){
             });
         }else
             res.json({result: 'Nothing founded'});
+    });
+});
+
+router.get('/position', loginfilter, function(req, res, next){
+
+    res.render('position', {
+        nickname: req.session.nickname,
+        logopath: req.session.logopath,
+        active: 'position'
     });
 });
 

@@ -8,10 +8,6 @@ block content
                 form.form-horizontal(action="/setting_upload" enctype="multipart/form-data" method="post")
                     div.box-body
                         div.form-group.row
-                            label.col-sm-2.control-label(for='positioninput') 我的职位
-                            div.col-sm-7
-                                input#positioninput.form-control(placeholder='#{position}' value='#{position}' name='position')
-                        div.form-group.row
                             label.col-sm-2.control-label(for='personinfoarea') 个人信息
                             div.col-sm-7
                                 textarea#personinfoarea.form-control(rows='5' placeholder='#{personinfo}' name='personinfo') #{personinfo}

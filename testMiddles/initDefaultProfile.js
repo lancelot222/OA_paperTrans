@@ -1,5 +1,4 @@
 var fs = require("fs");
-var markdown = require( "markdown" ).markdown;
 var iconv = require('iconv-lite');
 var profiles = require('../database/db').profiles;
 
@@ -55,12 +54,11 @@ fs.open('f1.md', 'r+', function(err, fd) {
 
                               var profile = new profiles({
                                   username: "default@qq.com",
-                                  position: "Team Member",
+                                  position: "0",
                                   personinfo: "",
                                   mainwork:   "",
                                   teamwork:   "",
-                                  skilllist:  "",
-                                  backpath:   "dist/img/photo1.png"
+                                  skilllist:  ""
                               });
 
                               profile.personinfo= f1;

@@ -1,0 +1,104 @@
+extends ./template/index
+
+block content
+    section.content
+            div.box.box-primary
+                div.box-header.with-border
+                    h6.box-title(style='font-size:14px;font-weight:normal') 更改个人主页的信息
+                form.form-horizontal
+                    div.box-body
+                        div.form-group.row
+                            label.col-sm-2.control-label(for='titleinput') 流程名称
+                            div.col-sm-7
+                                input#titleinput.form-control(name='workflowDesignTitle')
+                        div.form-group.row
+                            label.col-sm-2.control-label(for='categoryinput') 流程类型
+                            div.col-sm-2
+                                select#categoryinput.form-control(name='workflowDesignCategary')
+                                    option 公办外出
+                                    option 人力相关
+                                    option 职位相关
+                                    option 福利相关
+                                    option 物资申退
+                                    option 活动申请
+                                    option 其他
+                            label.col-sm-2.control-label(for='tableinput') 所用表单
+                            div.col-sm-3
+                                select#tableinput.form-control(name='workflowDesignTable')
+                                    option 公办外出
+                                    option 人力相关
+                                    option 职位相关
+                                    option 福利相关
+                                    option 物资申退
+                                    option 活动申请
+                                    option 其他
+                        div.form-group.row
+                            label.col-sm-2.control-label(for='workflowinput') 流程设计
+                            div.col-sm-5
+                                table#workflowTable.table.table-bordered
+                                    tbody 
+                                        tr
+                                            th(style='width:10px') #
+                                            th(style='width:50%') 阶段
+                                            th 成功阶段
+                                            th 失败阶段
+                                        tr#trOrderS
+                                            td 1.
+                                            td 流程发起发起
+                                            td 下一阶段
+                                            td 结束
+                                        tr#trOrderE
+                                            td 2.
+                                            td 流程结果确认
+                                            td 结束
+                                            td 结束
+                            div.col-sm-5
+                                a.btn.btn-primary(data-toggle="popover") 添加流程节点
+                            div#addWorkstatePopover
+                                div#popover-head.hide 添加流程节点
+                                div#popover-content.hide
+                                    div.form-horizonta
+                                        div
+                                            label.control-label 流程节点
+                                            select#nodevalue.form-control
+                                                option 直接上级
+                                                option 人事管理组
+                                                option 薪资统计监管组
+                                                option 采购组
+                                                option IT服务组
+                                                option 物资管理组
+                                                option 总经理
+                                        hr(style='margin:5px auto 5px')
+                                    button.btn.btn-primary(type='button' onclick='popOk()') 添加
+                                    button.btn.btn-danger(type='button' style='float:right' onclick='closePop()') 取消
+                div.box-footer
+                    div.row
+                        div.col-sm-offset-2.col-sm-7
+                            button#wkaka.btn.btn-danger 确认提交
+
+block scripts
+    script.
+        $(function (){
+            $("[data-toggle='popover']").popover({
+                    html: true,
+                    title: function(){
+                        return $("#addWorkstatePopover #popover-head").html();
+                    },
+                    content: function(){
+                        return $("#addWorkstatePopover #popover-content").html();
+                    },
+            });
+        });
+        
+        function closePop(){
+            $(".popover").remove();
+        }
+        function popOk() {
+            var newtr=$("<tr></tr>").html(
+                        "<td>" + (($("#workflowTable tbody tr").size())-1).toString() + ".</td>" +
+                        "<td>" + $("#nodevalue").val() + " 审核</td>" +
+                        "<td>下一阶段</td>" +
+                        "<td>结束</td>");
+            $("#trOrderE").before(newtr)
+            $("#trOrderE td").first().text((($("#workflowTable tbody tr").size())-1).toString()+".");
+        }
