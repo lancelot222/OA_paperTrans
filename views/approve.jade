@@ -11,12 +11,12 @@ block content
                     table#approve_table.table.table-bordered.table-hover.dataTable(role="grid" aria-describedby="approve_table_info" width="100%")
                         thead
                             tr
-                                th.category(width="15%")
-                                th.title(width="30%")
-                                th.status(width="15%")
-                                th.startDate(width="15%")
-                                th.priority(width="10%")
-                                th.schedule(width="15%")
+                                th(width="10%")
+                                th(width="30%")
+                                th(width="20%")
+                                th(width="15%")
+                                th(width="15%")
+                                th(width="10%")
 
 block headpart
     link(rel='stylesheet' href='plugins/datatables/dataTables.bootstrap.css')
@@ -37,8 +37,8 @@ block scripts
                     {data: 'title',    title: '申请流程名'},
                     {data: 'status',   title: '状态'},
                     {data: 'startDate',title: '发起日期'},
-                    {data: 'priority', title: '优先级'},
-                    {data: 'schedule', title: '进度'}
+                    {data: 'startUser', title: '发起人'},
+                    {data: 'progress', title: '进度'}
                 ],
                 language: {
                     url: '/mypublic/others/chinese.json'

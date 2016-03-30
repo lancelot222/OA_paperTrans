@@ -1,5 +1,6 @@
 var express = require('express');
 var loginchecks = require('../database/db').loginchecks;
+var profiles    = require('../database/db').profiles;
 var crypto  = require('crypto');
 var router  = express.Router();
 
@@ -25,7 +26,12 @@ router.post('/login', function(req, res, next){
                 req.session.cookie.maxAge   = 1000 * 60 * 60 * 24 * 7; // 7天
             }
 
-            res.redirect('/');
+            profiles.findOne({username: req.session.username})
+                    .select('position')
+                    .exec(function(err, profile) {
+                        req.session.position = profile.position;
+                        res.redirect('/');
+                    });
         }else{
             console.log(query_doc.username + ": login failed at " + new Date());
             res.render('login', {loginfailed:'yes'})

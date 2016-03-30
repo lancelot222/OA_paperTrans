@@ -15,19 +15,19 @@ block content
                     table#not_done_table.table.table-bordered.table-hover.dataTable(role="grid" aria-describedby="not_done_table_info" width="100%")
                         thead
                             tr
-                                th.category(width="15%")
-                                th.title(width="30%")
-                                th.status(width="15%")
-                                th.startDate(width="15%")
-                                th.priority(width="10%")
-                                th.schedule(width="15%")
+                                th(width="10%")
+                                th(width="30%")
+                                th(width="20%")
+                                th(width="15%")
+                                th(width="15%")
+                                th(width="10%")
                 div#tab_2.tab-pane
                     table#startapprove_table.table.table-bordered.table-hover.dataTable(role="grid" aria-describedby="startapprove_table_info" width="100%")
                         thead
                             tr
-                                th.category(width="15%")
-                                th.title(width="55%")
-                                th.link(width="30%")
+                                th(width="15%")
+                                th(width="55%")
+                                th(width="30%")
                 div#tab_3.tab-pane
                     form.form-horizontal(action="/notice_upload" method="post")
                         div.box-body
@@ -90,8 +90,8 @@ block scripts
                     {data: 'title',    title: '申请流程名'},
                     {data: 'status',   title: '状态'},
                     {data: 'startDate',title: '发起日期'},
-                    {data: 'priority', title: '优先级'},
-                    {data: 'schedule', title: '进度'}
+                    {data: 'startUser',title: '发起人'},
+                    {data: 'progress', title: '进度'}
                 ],
                 language: {
                     url: '/mypublic/others/chinese.json'
@@ -101,7 +101,7 @@ block scripts
             });
             $("#startapprove_table").DataTable({
                 ajax: {
-                    url: '/api/approve_table',
+                    url: '/api/workflow_data',
                     dataSrc: 'data'
                 },
                 columns: [

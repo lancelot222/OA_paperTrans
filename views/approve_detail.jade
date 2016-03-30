@@ -8,12 +8,13 @@ block content
                 form.form-horizontal
                     div.box-body
                         div#table_content!=table_content
-                div.box-footer
-                    div.row
-                        div.col-sm-offset-2.col-sm-2
-                            button.btn.btn-success(type='submit') 同意申请
-                        div.col-sm-2
-                            button.btn.btn-danger(type='submit') 否决申请
+                if "T" == "#{canHandle}"
+                    div.box-footer
+                        div.row
+                            div.col-sm-offset-2.col-sm-2
+                                button.btn.btn-success(type='submit') 同意申请
+                            div.col-sm-2
+                                button.btn.btn-danger(type='submit') 否决申请
                     
 block headpart
     link(rel='stylesheet' href='/mypublic/stylesheets/myMarkdown.css')

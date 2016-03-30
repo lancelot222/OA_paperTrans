@@ -70,17 +70,21 @@ router.post('/notice_upload', loginfilter, function(req, res, next){
 });
 
 router.get('/approve/:id', loginfilter, function(req, res, next){
-    processes.findOne({processID: req.params.id}, function(err, process_doc){
-        if(process_doc){
-            tables.findOne({tableID: process_doc.tableID}, function(err, table_doc){
-                if(table_doc){
+    processes.findOne({processID: req.params.id}, function(err, process){
+        if(process){
+            tables.findOne({tableID: process.tableID}, function(err, table){
+                if(table){
+                    var canHandle = "F";
+                    if(process.nowOperator == req.session.position)
+                        canHandle = "T";
                     res.render('approve_detail', {
                         nickname:   req.session.nickname,
                         logopath:   req.session.logopath,
                         active:     'approve',
-                        table_title:table_doc.title,
-                        table_content:  table_doc.detail,
-                        data:       JSON.stringify(process_doc.data)
+                        table_title:    table.title,
+                        table_content:  table.detail,
+                        data:       JSON.stringify(process.data),
+                        canHandle:  canHandle
                     });
                 }
             });
@@ -96,18 +100,43 @@ router.post('/approve_upload', loginfilter, function(req, res, next){
         processID:  str_id,
         tableID:    req.session.table_tableID,
         category:   req.session.table_category,
-        data:       req.body,                                 // 等下再做数据
-        title:      '<a href="/approve/' + str_id + '">' + req.session.table_title + '</a>',
-        status:     "进入流程",                              //这里要做
+        data:       req.body,
+        title:      "",
+        status:     "",
         startDate:  moment().format('YYYY-MM-DD HH:mm:ss'),
         startUser:  req.session.username,
-        priority:   req.session.table_priority,
-        schedule:   "0%",                                   //控
-        nowOperator:req.session.username                    //制
+        schedule:   "",
+        progress:   "0%",
+        nowOperator:""
     });
-    process.save(function(err){
-        res.redirect('/');
-    })
+
+    workflows.findOne({workflowID: req.session.workflow_workflowID}, function(err, workflow) {
+        if(err){
+            console.log(err);
+            res.redirect('/');
+        }else {
+            schedule = workflow.detail.split(',');
+            process.schedule    = workflow.detail;
+            var pos = req.session.position;
+            if(schedule[0] == "1"){
+                if(parseInt(pos) == "0")
+                    pos = "131";
+                else if(parseInt(pos) <= 14)
+                    pos = "11";
+                else if(parseInt(pos) <= 100)
+                    pos = "1" + pos;
+                else
+                    pos = pos.substring(0,2);
+            }
+            process.nowOperator = pos;
+            process.status      = "待 " + config.positionJson[pos] + " 审批";
+            process.title       = '<a href="/approve/' + str_id + '">' + workflow.title + '</a>';
+
+            process.save(function(err){
+                res.redirect('/');
+            });
+        }
+    });
 });
 
 router.get('/approve', loginfilter, function(req, res, next){
@@ -306,13 +335,21 @@ router.post('/workflowDesign', loginfilter, function(req, res, next){
     });
 });
 
+router.get('/workflow/:id', loginfilter, function(req, res, next){
+    workflows.findOne({workflowID: req.params.id}, function(err, doc){
+        if(doc){
+            req.session.workflow_workflowID = doc.workflowID;
+            res.redirect('/table/' + doc.tableID);
+        }
+    });
+});
+
 router.get('/table/:id', loginfilter, function(req, res, next){
     tables.findOne({tableID: req.params.id}, function(err, doc){
         if(doc){
             req.session.table_title     = doc.title;
             req.session.table_category  = doc.category;
             req.session.table_tableID   = doc.tableID;
-            req.session.table_priority  = doc.priority;
 
             res.render('table_detail', {
                 nickname: req.session.nickname,
@@ -327,13 +364,5 @@ router.get('/table/:id', loginfilter, function(req, res, next){
     });
 });
 
-router.get('/position', loginfilter, function(req, res, next){
-
-    res.render('position', {
-        nickname: req.session.nickname,
-        logopath: req.session.logopath,
-        active: 'position'
-    });
-});
 
 module.exports = router;
