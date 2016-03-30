@@ -14,8 +14,8 @@ block content
                         div.form-group.row
                             label.col-sm-2.control-label(for='categoryinput') 流程类型
                             div.col-sm-2
-                                select#categoryinput.form-control(name='workflowDesignCategary')
-                                    option 公办外出
+                                select#categoryinput.form-control(name='workflowDesignCategary' onchange='filteSelect()')
+                                    option(selected) 公办外出
                                     option 人力相关
                                     option 职位相关
                                     option 福利相关
@@ -25,13 +25,6 @@ block content
                             label.col-sm-2.control-label(for='tableinput') 所用表单
                             div.col-sm-3
                                 select#tableinput.form-control(name='workflowDesignTable')
-                                    option 公办外出
-                                    option 人力相关
-                                    option 职位相关
-                                    option 福利相关
-                                    option 物资申退
-                                    option 活动申请
-                                    option 其他
                         div.form-group.row
                             label.col-sm-2.control-label(for='workflowinput') 流程设计
                             div.col-sm-5
@@ -60,21 +53,14 @@ block content
                                     div.form-horizonta
                                         div
                                             label.control-label 流程节点
-                                            select#nodevalue.form-control
-                                                option 直接上级
-                                                option 人事管理组
-                                                option 薪资统计监管组
-                                                option 采购组
-                                                option IT服务组
-                                                option 物资管理组
-                                                option 总经理
+                                            select#positionvalue.form-control
                                         hr(style='margin:5px auto 5px')
                                     button.btn.btn-primary(type='button' onclick='popOk()') 添加
                                     button.btn.btn-danger(type='button' style='float:right' onclick='closePop()') 取消
                 div.box-footer
                     div.row
                         div.col-sm-offset-2.col-sm-7
-                            button#wkaka.btn.btn-danger 确认提交
+                            button#wkaka.btn.btn-danger(onclick='sendTable()') 确认提交
 
 block scripts
     script.
@@ -88,7 +74,26 @@ block scripts
                         return $("#addWorkstatePopover #popover-content").html();
                     },
             });
+            
+            filteSelect();
+            
+            var pos = !{posJson};
+            for (var key in pos)
+                if(key != "0")
+                    $("#positionvalue").append("<option>"+pos[key]+"</option>");
         });
+        
+        function filteSelect() {
+            $("#tableinput").empty();
+            
+            var cate = $("#categoryinput").val();
+            var tabs = [!{tables}];
+            for (var idx in tabs) {
+                if(cate == tabs[idx].category){
+                    $("#tableinput").append("<option>"+tabs[idx].title+"</option>");
+                }
+            }
+        }
         
         function closePop(){
             $(".popover").remove();
@@ -101,4 +106,13 @@ block scripts
                         "<td>结束</td>");
             $("#trOrderE").before(newtr)
             $("#trOrderE td").first().text((($("#workflowTable tbody tr").size())-1).toString()+".");
+        }
+        
+        function sendTable() {
+            var tabs = [!{tables}];
+            for (var idx in tabs) {
+                console.log($("#tableinput").val());
+                if($("#tableinput").val() == tabs[idx].title)
+                    console.log(tabs[idx].tableID);
+            }
         }

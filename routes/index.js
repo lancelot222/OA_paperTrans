@@ -237,11 +237,16 @@ router.post('/setting_upload', loginfilter, function(req, res, next){
 });
 
 router.get('/tableDesign', function(req, res, next){
-    res.render('tableDesign', {
-        nickname: req.session.nickname,
-        logopath: req.session.logopath,
-        active: 'tableDesign'
-    });
+    tables.find({})
+          .select('tableID title category -_id')
+          .exec(function(err, docs) {
+              res.render('tableDesign', {
+                  nickname: req.session.nickname,
+                  logopath: req.session.logopath,
+                  active: 'tableDesign',
+                  tables: docs
+              });
+          });
 });
 
 router.post('/tableDesign', function(req, res, next){
@@ -265,11 +270,17 @@ router.post('/tableDesign', function(req, res, next){
 });
 
 router.get('/workflowDesign', function(req, res, next){
-    res.render('workflowDesign', {
-        nickname: req.session.nickname,
-        logopath: req.session.logopath,
-        active: 'workflowDesign'
-    });
+    tables.find({})
+          .select('tableID title category -_id')
+          .exec(function(err, docs) {
+              res.render('workflowDesign', {
+                  nickname: req.session.nickname,
+                  logopath: req.session.logopath,
+                  active: 'workflowDesign',
+                  tables: docs,
+                  posJson: JSON.stringify(config.positionJson)
+              });
+          });
 });
 
 

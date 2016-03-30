@@ -10,7 +10,7 @@ block content
                         div.form-group.row
                             label.col-sm-2.control-label(for='titleinput') 表单名称
                             div.col-sm-7
-                                input#titleinput.form-control(name='tableDesignTitle')
+                                input#titleinput.form-control(name='tableDesignTitle' onblur='checkTableTitle()')
                         div.form-group.row
                             label.col-sm-2.control-label(for='categoryinput') 表单类型
                             div.col-sm-2
@@ -127,3 +127,19 @@ block scripts
     script(src='/plugins/input-mask/jquery.inputmask.extensions.js')
     script(src='/mypublic/javascripts/uuid.js')
     script(src='/mypublic/javascripts/tableDesign.js')
+    script.
+        function checkTableTitle(){ //要用传参... 只能把这东西放在jade里面了
+            var tmpTitle = $("#titleinput").val();
+            var tabs = [!{tables}], find = 0;
+            for (var idx in tabs)
+                if(tmpTitle == tabs[idx].title){
+                    $("#titleinput").val('');
+                    $("#titleinput").attr('placeholder', '表名称已经被使用');
+                    $("#titleinput").parent().addClass('has-error');
+                    find = 1;
+                    break;
+                }
+            if(find == 0){
+                $("#titleinput").parent().removeClass('has-error');
+            }
+        }
