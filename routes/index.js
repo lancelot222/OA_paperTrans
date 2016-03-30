@@ -4,6 +4,7 @@ var loginchecks = require('../database/db').loginchecks;
 var processes   = require('../database/db').processes;
 var notices     = require('../database/db').notices;
 var tables      = require('../database/db').tables;
+var workflows   = require('../database/db').workflows;
 var marked      = require( "marked" );
 var formidable  = require('formidable'), util = require('util');
 var uuid    = require('node-uuid');
@@ -265,11 +266,11 @@ router.post('/tableDesign', function(req, res, next){
         link:       '<a href="/table/' + str_id + '">发起申请</a>'
     });
     table.save(function(err){
-        console.log(err);
+        if(err) console.log(err);
     });
 });
 
-router.get('/workflowDesign', function(req, res, next){
+router.get('/workflowDesign', loginfilter, function(req, res, next){
     tables.find({})
           .select('tableID title category -_id')
           .exec(function(err, docs) {
@@ -283,6 +284,27 @@ router.get('/workflowDesign', function(req, res, next){
           });
 });
 
+router.post('/workflowDesign', loginfilter, function(req, res, next){
+    console.log('--------------------------- workflowDesign in');
+    console.log(req.body.workflowTitle);
+    console.log(req.body.workflowCategary);
+    console.log(req.body.workflowDetail);
+    console.log(req.body.tableID);
+    console.log('--------------------------- workflowDesign out');
+
+    var str_id  = uuid.v1();
+    var workflow  = new workflows({
+        workflowID: str_id,
+        tableID:    req.body.tableID,
+        title:      req.body.workflowTitle,
+        category:   req.body.workflowCategary,
+        detail:     req.body.workflowDetail,
+        link:       '<a href="/workflow/' + str_id + '">发起流程</a>'
+    });
+    workflow.save(function(err){
+        if(err) console.log(err);
+    });
+});
 
 router.get('/table/:id', loginfilter, function(req, res, next){
     tables.findOne({tableID: req.params.id}, function(err, doc){

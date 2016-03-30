@@ -99,9 +99,16 @@ block scripts
             $(".popover").remove();
         }
         function popOk() {
+            var stepNo;
+            var pos = !{posJson};
+            for (var key in pos)
+                if(pos[key] == $("#positionvalue").val())
+                    stepNo = key;
+                    
             var newtr=$("<tr></tr>").html(
                         "<td>" + (($("#workflowTable tbody tr").size())-1).toString() + ".</td>" +
-                        "<td>" + $("#nodevalue").val() + " 审核</td>" +
+                        "<td class='step" + stepNo + "' name='steps'>" 
+                            + $("#positionvalue").val() + " 审核</td>" +
                         "<td>下一阶段</td>" +
                         "<td>结束</td>");
             $("#trOrderE").before(newtr)
@@ -110,9 +117,28 @@ block scripts
         
         function sendTable() {
             var tabs = [!{tables}];
+            var tableID;
             for (var idx in tabs) {
-                console.log($("#tableinput").val());
                 if($("#tableinput").val() == tabs[idx].title)
-                    console.log(tabs[idx].tableID);
+                    tableID = tabs[idx].tableID;
             }
+            
+            var stepArray = new Array();
+            $("td[name='steps']").each(function(idx, obj){
+                stepArray[idx] = $(obj).attr('class').substring(4);
+            });
+                                    
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = stateChange;
+            xmlhttp.open("POST","/workflowDesign",true);
+            xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+            var strSend = "tableID=" + tableID
+                        + "&workflowTitle=" + $("#titleinput").val()
+                        + "&workflowCategary=" + $("#categoryinput").val()
+                        + "&workflowDetail=" + stepArray.toString();
+            xmlhttp.send(strSend);
+        }
+        
+        function stateChange(){
+            location.reload();
         }

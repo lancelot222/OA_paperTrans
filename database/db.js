@@ -35,7 +35,6 @@ var profileSchema = new Schema({
 
 var processesSchema = new Schema({
     processID:  String,
-    tableID:    String,
     category:   String,
     data:       Object,
     title:      String,
@@ -44,6 +43,7 @@ var processesSchema = new Schema({
     startUser:  String,
     priority:   String,
     schedule:   String,
+    progress:   String,
     nowOperator:String
 });
 
@@ -63,8 +63,18 @@ var tablesSchema    = new Schema({
     link:       String
 });
 
+var workflowSchema  = new Schema({
+    workflowID: String,
+    tableID:    String,
+    title:      String,
+    category:   String,
+    detail:     Object,
+    link:       String
+});
+
 exports.loginchecks = mongoose.model('loginchecks', loginSchema);
 exports.profiles    = mongoose.model('profiles',    profileSchema);
 exports.processes   = mongoose.model('processes',   processesSchema);
 exports.notices     = mongoose.model('notices',     noticesSchema);
 exports.tables      = mongoose.model('tables',      tablesSchema);
+exports.workflows   = mongoose.model('workflows',      workflowSchema);
