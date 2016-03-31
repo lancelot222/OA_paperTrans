@@ -1,0 +1,47 @@
+extends ./template/index
+
+block content
+    section.content
+            div.box.box-primary
+                div.box-header.with-border
+                    h6.box-title(style='font-size:14px;font-weight:normal')
+                        if transok
+                            | 转岗成功
+                        else if transwrong
+                            | 转岗失败 #{transwrong}
+                        else
+                            | 转岗工具
+                form.form-horizontal(action='/position' method='POST')
+                    div.box-body
+                        div.form-group.row
+                            label.col-sm-2.control-label(for='personinfoarea') 转岗员工
+                            div.col-sm-7
+                                input#transuser.form-control(name='transuser')
+                        div.form-group.row
+                            label.col-sm-2.control-label(for='mainworkarea') 目标职位
+                            div.col-sm-3
+                                select#positionvalue.form-control(name='targetpos')
+                    div.box-footer
+                        div.row
+                            div.col-sm-offset-2.col-sm-7
+                                button.btn.btn-danger(type='submit' onclick='preSend()') 确认更改并提交
+
+block scripts
+    script.
+        $(function (){
+            var pos = !{posJson};
+            for (var key in pos)
+                if(!(key == "0" || key == "1"))
+                    $("#positionvalue").append("<option>"+pos[key]+"</option>");
+        });
+        function preSend() {
+            var targetpos;
+            var pos = !{posJson};
+            for (var key in pos)
+                if(pos[key] == $("#positionvalue").val()){
+                    targetpos = key;
+                    break;
+                }
+            $("#positionvalue").empty().html("<option selected='selected'>"+ key +"</option>");
+            return true;
+        }

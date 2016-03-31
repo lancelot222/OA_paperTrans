@@ -28,6 +28,7 @@ router.get('/', loginfilter, function(req, res, next) {
     res.render('worktop', {
         nickname: req.session.nickname,
         logopath: req.session.logopath,
+        position: req.session.position,
         active: 'worktop'
     });
 });
@@ -36,6 +37,7 @@ router.get('/notice', loginfilter, function(req, res, next){
     res.render('notice', {
         nickname: req.session.nickname,
         logopath: req.session.logopath,
+        position: req.session.position,
         active: 'notice'
     });
 });
@@ -46,6 +48,7 @@ router.get('/notice/:id', loginfilter, function(req, res, next){
             res.render('notice_detail', {
                 nickname: req.session.nickname,
                 logopath: req.session.logopath,
+                position: req.session.position,
                 active: 'notice',
                 notice_title: doc.title,
                 notice_content: doc.detail
@@ -157,6 +160,7 @@ router.get('/approve/:id', loginfilter, function(req, res, next){
                     res.render('approve_detail', {
                         nickname:   req.session.nickname,
                         logopath:   req.session.logopath,
+                        position:   req.session.position,
                         active:     'approve',
                         table_title:    table.title,
                         table_content:  table.detail,
@@ -173,7 +177,7 @@ router.get('/approve/:id', loginfilter, function(req, res, next){
 
 router.post('/approve_upload', loginfilter, function(req, res, next){
     var str_id  = uuid.v1();
-
+    console.log(req.body);
     var process = new processes({
         processID:  str_id,
         tableID:    req.session.table_tableID,
@@ -225,6 +229,7 @@ router.get('/approve', loginfilter, function(req, res, next){
     res.render('approve', {
         nickname: req.session.nickname,
         logopath: req.session.logopath,
+        position: req.session.position,
         active: 'approve'
     });
 })
@@ -233,6 +238,7 @@ router.get('/archive', loginfilter, function(req, res, next){
     res.render('archive', {
         nickname: req.session.nickname,
         logopath: req.session.logopath,
+        position: req.session.position,
         active: 'archive'
     });
 })
@@ -243,7 +249,8 @@ router.get('/about', loginfilter, function(req, res, next) {
     var rmd = function(doc) {
         res.render('about', {
             nickname:   req.session.nickname,
-            position:   config.positionJson[doc.position],
+            position:   req.session.position,
+            positioninfo:   config.positionJson[doc.position],
             personinfo: marked(doc.personinfo),
             mainwork:   marked(doc.mainwork),
             teamwork:   marked(doc.teamwork),
@@ -275,6 +282,7 @@ router.get('/setting', loginfilter, function(req, res, next){
         res.render('setting', {
             nickname:   req.session.nickname,
             logopath:   req.session.logopath,
+            position:   req.session.position,
             active:     'setting',
             // 以下是setting展示，用以更改参考 markdown原文
             position:   config.positionJson[doc.position],
@@ -363,6 +371,7 @@ router.get('/tableDesign', function(req, res, next){
               res.render('tableDesign', {
                   nickname: req.session.nickname,
                   logopath: req.session.logopath,
+                  position:   req.session.position,
                   active: 'tableDesign',
                   tables: docs
               });
@@ -396,6 +405,7 @@ router.get('/workflowDesign', loginfilter, function(req, res, next){
               res.render('workflowDesign', {
                   nickname: req.session.nickname,
                   logopath: req.session.logopath,
+                  position:   req.session.position,
                   active: 'workflowDesign',
                   tables: docs,
                   posJson: JSON.stringify(config.positionJson)
@@ -444,6 +454,7 @@ router.get('/table/:id', loginfilter, function(req, res, next){
             res.render('table_detail', {
                 nickname: req.session.nickname,
                 logopath: req.session.logopath,
+                position:   req.session.position,
                 active:   'worktop',
                 table_title:    doc.title,
                 table_category: doc.category,
@@ -454,5 +465,46 @@ router.get('/table/:id', loginfilter, function(req, res, next){
     });
 });
 
+router.get('/position', loginfilter, function(req, res, next){
+    res.render('position', {
+        nickname:   req.session.nickname,
+        logopath:   req.session.logopath,
+        position:   req.session.position,
+        active:     'position',
+        posJson:    JSON.stringify(config.positionJson)
+    });
+});
+
+router.post('/position', loginfilter, function(req, res, next){
+    profiles.findOne({username: req.body.transuser}, function(err, profile){
+        //console.log(profile);
+        if(profile){
+            profile.position = req.body.targetpos;
+            if(req.body.transuser == req.session.username)
+                req.session.position = req.body.targetpos;
+
+            profiles.update({username: req.body.transuser}, profile, function(err){
+                if(err) console.log(err);
+                else res.render('position', {
+                        nickname:   req.session.nickname,
+                        logopath:   req.session.logopath,
+                        position:   req.session.position,
+                        active:     'position',
+                        posJson:    JSON.stringify(config.positionJson),
+                        transok:    "转岗成功"
+                    });
+            });
+        }else {
+            res.render('position', {
+                nickname:   req.session.nickname,
+                logopath:   req.session.logopath,
+                position:   req.session.position,
+                active:     'position',
+                posJson:    JSON.stringify(config.positionJson),
+                transwrong: "用户名未找到"
+            });
+        }
+    })
+});
 
 module.exports = router;
