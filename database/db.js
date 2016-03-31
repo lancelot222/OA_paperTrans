@@ -44,7 +44,8 @@ var processesSchema = new Schema({
     startUser:  String,
     schedule:   String,
     progress:   String,
-    nowOperator:String
+    nowOperator:String,
+    nextStep:   String
 });
 
 var noticesSchema   = new Schema({

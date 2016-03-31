@@ -1,0 +1,45 @@
+extends ./template/index
+
+block content
+    section.content
+        div.nav-tabs-custom
+            ul.nav.nav-tabs
+                li.active
+                    a(href="#tab_1" data-toggle="tab") 我的申请
+            div.tab-content
+                div#tab_1.tab-pane.active
+                    table#archive_table.table.table-bordered.table-hover.dataTable(role="grid" aria-describedby="approve_table_info" width="100%")
+                        thead
+                            tr
+                                th(width="10%")
+                                th(width="40%")
+                                th(width="35%")
+                                th(width="15%")
+
+block headpart
+    link(rel='stylesheet' href='plugins/datatables/dataTables.bootstrap.css')
+
+block scripts
+    script(src='plugins/datatables/jquery.dataTables.min.js')
+    script(src='plugins/datatables/dataTables.bootstrap.min.js')
+    
+    script.
+        $(document).ready( function () {
+            $('#archive_table').DataTable({
+                ajax: {
+                    url: '/api/archive_data',
+                    dataSrc: 'data'
+                },
+                columns: [
+                    {data: 'category', title: '类别'},
+                    {data: 'title',    title: '申请流程名'},
+                    {data: 'status',   title: '结果'},
+                    {data: 'startDate',title: '发起日期'}
+                ],
+                language: {
+                    url: '/mypublic/others/chinese.json'
+                },
+                autoWidth: false,
+                order: [[3, 'desc']]
+            });
+        } );

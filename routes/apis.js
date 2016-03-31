@@ -12,7 +12,8 @@ var router  = express.Router();
 
 router.get('/not_done_data', function(req, res, next){
     processes.find({ $or: [{nowOperator:req.session.position},
-                           {startUser:req.session.username}]})
+                           {startUser:req.session.username}],
+                     $nor:[{progress:'done'}]})
              .select('-_id')
              .exec(function(err, docs){
                  res.json({data: docs});
@@ -20,7 +21,16 @@ router.get('/not_done_data', function(req, res, next){
 });
 
 router.get('/approve_data', function(req, res, next){
-    processes.find({nowOperator:req.session.position})
+    processes.find({nowOperator:req.session.position,
+                    $nor:[{progress:'done'}]})
+             .select('-_id')
+             .exec(function(err, docs){
+                 res.json({data: docs});
+             });
+});
+
+router.get('/archive_data', function(req, res, next){
+    processes.find({progress:'done', startUser:req.session.username})
              .select('-_id')
              .exec(function(err, docs){
                  res.json({data: docs});

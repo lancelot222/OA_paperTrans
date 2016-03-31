@@ -69,14 +69,91 @@ router.post('/notice_upload', loginfilter, function(req, res, next){
     });
 });
 
+router.get('/processAgree', loginfilter, function(req, res, next){
+    console.log(req.session.nowHandleProcessID);
+    processes.findOne({processID: req.session.nowHandleProcessID}, function(err, process){
+        if(process){
+            var schedule    = process.schedule.split(',');
+            var stepsCnt    = schedule.length;
+            var nextStep    = parseInt(process.nextStep);
+            process.progress= process.nextStep + "/" + stepsCnt.toString();
+            if(nextStep < stepsCnt){ // 还有流程节点
+                profiles.findOne({username: process.startUser}, function(err, profile){
+                    var pos = profile.position;
+                    if(schedule[nextStep] == "1"){
+                        if(parseInt(pos) == "0")
+                            pos = "131";
+                        else if(parseInt(pos) <= 14)
+                            pos = "11";
+                        else if(parseInt(pos) <= 100)
+                            pos = "1" + pos;
+                        else
+                            pos = pos.substring(0,2);
+                    }else {
+                        pos = schedule[nextStep];
+                    }
+                    process.nowOperator = pos;
+                    process.status      = "待 " + config.positionJson[pos] + " 审批";
+                    process.nextStep = (nextStep+1).toString();
+                    console.log(process);
+                    processes.update({processID:req.session.nowHandleProcessID}, process, function(err) {
+                        if(err) console.log(err);
+                        else res.redirect('/');
+                    });
+                });
+            }else {  //已经走完所有流程节点
+                process.status      = "待 流程发起人 确认";
+                process.nowOperator = process.startUser;
+                process.nextStep    = "-1";
+                processes.update({processID:req.session.nowHandleProcessID}, process, function(err) {
+                    if(err) console.log(err);
+                    else res.redirect('/');
+                });
+            }
+        }
+    });
+});
+
+router.get('/processRegect', loginfilter, function(req, res, next){
+    processes.findOne({processID: req.session.nowHandleProcessID}, function(err, process){
+        if(process){
+            process.status      = "被 " + config.positionJson[process.nowOperator] + " 拒绝申请";
+            process.nowOperator = process.startUser;
+            process.nextStep    = "-2";
+            processes.update({processID: req.session.nowHandleProcessID}, process, function(err) {
+                if(err) console.log(err);
+                else res.redirect('/');
+            });
+        }
+    });
+});
+
+router.get('/processCheck', loginfilter, function(req, res, next){
+    processes.findOne({processID: req.session.nowHandleProcessID}, function(err, process){
+        if(process){
+            if(process.nextStep == "-1")
+                process.status = "流程完毕 全部通过";
+            process.nextStep = "-3";
+            process.progress = "done";
+            processes.update({processID: req.session.nowHandleProcessID}, process, function(err) {
+                if(err) console.log(err);
+                else res.redirect('/');
+            });
+        }
+    });
+});
+
 router.get('/approve/:id', loginfilter, function(req, res, next){
+    req.session.nowHandleProcessID = req.params.id;
     processes.findOne({processID: req.params.id}, function(err, process){
         if(process){
             tables.findOne({tableID: process.tableID}, function(err, table){
                 if(table){
-                    var canHandle = "F";
+                    var canHandle = "F", wait4check = "F";
                     if(process.nowOperator == req.session.position)
                         canHandle = "T";
+                    if(process.nextStep == "-1" || process.nextStep == "-2")
+                        wait4check = "T";
                     res.render('approve_detail', {
                         nickname:   req.session.nickname,
                         logopath:   req.session.logopath,
@@ -84,7 +161,8 @@ router.get('/approve/:id', loginfilter, function(req, res, next){
                         table_title:    table.title,
                         table_content:  table.detail,
                         data:       JSON.stringify(process.data),
-                        canHandle:  canHandle
+                        canHandle:  canHandle,
+                        wait4check: wait4check
                     });
                 }
             });
@@ -106,8 +184,9 @@ router.post('/approve_upload', loginfilter, function(req, res, next){
         startDate:  moment().format('YYYY-MM-DD HH:mm:ss'),
         startUser:  req.session.username,
         schedule:   "",
-        progress:   "0%",
-        nowOperator:""
+        progress:   "",
+        nowOperator:"",
+        nextStep:   "1"
     });
 
     workflows.findOne({workflowID: req.session.workflow_workflowID}, function(err, workflow) {
@@ -117,6 +196,7 @@ router.post('/approve_upload', loginfilter, function(req, res, next){
         }else {
             schedule = workflow.detail.split(',');
             process.schedule    = workflow.detail;
+            process.progress    = "0/" + (process.schedule.split(',').length.toString());
             var pos = req.session.position;
             if(schedule[0] == "1"){
                 if(parseInt(pos) == "0")
@@ -127,6 +207,8 @@ router.post('/approve_upload', loginfilter, function(req, res, next){
                     pos = "1" + pos;
                 else
                     pos = pos.substring(0,2);
+            }else{
+                pos = schedule[0];
             }
             process.nowOperator = pos;
             process.status      = "待 " + config.positionJson[pos] + " 审批";
@@ -144,6 +226,14 @@ router.get('/approve', loginfilter, function(req, res, next){
         nickname: req.session.nickname,
         logopath: req.session.logopath,
         active: 'approve'
+    });
+})
+
+router.get('/archive', loginfilter, function(req, res, next){
+    res.render('archive', {
+        nickname: req.session.nickname,
+        logopath: req.session.logopath,
+        active: 'archive'
     });
 })
 

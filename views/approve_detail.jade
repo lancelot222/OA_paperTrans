@@ -8,13 +8,18 @@ block content
                 form.form-horizontal
                     div.box-body
                         div#table_content!=table_content
-                if "T" == "#{canHandle}"
+                if "T" == canHandle
                     div.box-footer
                         div.row
                             div.col-sm-offset-2.col-sm-2
-                                button.btn.btn-success(type='submit') 同意申请
-                            div.col-sm-2
-                                button.btn.btn-danger(type='submit') 否决申请
+                                a.btn.btn-success(href='/processAgree') 同意继续流程
+                            div.col-sm-5
+                                a.btn.btn-danger(href='/processRegect') 否决流程
+                if "T" == wait4check
+                    div.box-footer
+                        div.row
+                            div.col-sm-offset-2.col-sm-2
+                                a.btn.btn-success(href='/processCheck') 确认流程结果
                     
 block headpart
     link(rel='stylesheet' href='/mypublic/stylesheets/myMarkdown.css')
@@ -25,7 +30,6 @@ block scripts
     script(src='/plugins/fancyBox/source/jquery.fancybox.pack.js')
     script(src='/mypublic/javascripts/marked.js')
     //myMarkdown 
-    script(src='/mypublic/javascripts/myMarkdown.js')
     script(src='/mypublic/google-code-prettify/prettify.js')
     
     script.
@@ -37,7 +41,38 @@ block scripts
                     $("[name='" + key + "']").attr('checked', true);
                 }
             }
+            $("#table_content textarea").each(function(){
+                $(this).after("<div id='markdown'>" + marked($(this).val()) + "</div>");
+                $(this).remove();
+            });
             $("#table_content input,textarea").attr('readonly', 'readonly');
             $("#table_content select").attr('disabled', 'disabled')
             $("#table_content input[type='checkbox']").attr("onclick", "return false;")
+            
+            var $imgs = $('div#markdown img');
+            $imgs.attr('class', 'img-responsive pad');
+            $imgs.wrap("<a></a>");
+            $imgs.parent().attr('class', 'fancybox').attr('rel', 'group');
+            
+            $imgs.each(function(index, img){
+                $(img).parent().attr('href', $(img).attr('src'));
+            });
+            
+            
+            // 代码高亮
+            var $code = $('div#markdown pre');
+            $code.attr('class', 'prettyprint linenums');
+            prettyPrint();
+            
+            var $table = $('div#markdown table');
+            $table.attr('class', 'table table-bordered table-hover table-striped');
+            
+            $(".fancybox").fancybox({
+                loop: false,
+                helpers: {
+                    overlay: {
+                        locked: false
+                    }
+                }
+            });
         });

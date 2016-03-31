@@ -17,7 +17,7 @@ module.exports = {
             134: "IT服务组组长", 135: "物资管理组组长",
         141: "第一销售组组长", 142: "核心策略组组长", 143: "执行组组长", 144: "统计组组长"
     },
-    
+
     defaultSearchUsername: 'default@qq.com',
     tmpUploadDir: './public/mypublic/uploads/',
     logoStoreDir: '/mypublic/uploads/logoups/',
