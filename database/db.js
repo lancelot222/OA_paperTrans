@@ -78,4 +78,4 @@ exports.profiles    = mongoose.model('profiles',    profileSchema);
 exports.processes   = mongoose.model('processes',   processesSchema);
 exports.notices     = mongoose.model('notices',     noticesSchema);
 exports.tables      = mongoose.model('tables',      tablesSchema);
-exports.workflows   = mongoose.model('workflows',      workflowSchema);
+exports.workflows   = mongoose.model('workflows',   workflowSchema);

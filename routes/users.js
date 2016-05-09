@@ -2,6 +2,7 @@ var express = require('express');
 var loginchecks = require('../database/db').loginchecks;
 var profiles    = require('../database/db').profiles;
 var crypto  = require('crypto');
+var config  = require('../config');
 var router  = express.Router();
 
 // 展示的登录界面
@@ -29,7 +30,10 @@ router.post('/login', function(req, res, next){
             profiles.findOne({username: req.session.username})
                     .select('position')
                     .exec(function(err, profile) {
-                        req.session.position = profile.position;
+                        if(profile){
+                            req.session.position = profile.position;
+                        }else
+                            req.session.position = '0';
                         res.redirect('/');
                     });
         }else{
@@ -66,6 +70,13 @@ router.post('/register', function(req, res, next){
                     console.log("save faild");
                 else
                     console.log('save succ');
+            });
+
+            profiles.findOne({username: config.defaultSearchUsername}, function(err, doc){
+                doc.username = req.body.username;
+                var profile = new profiles(doc);
+                console.log(profile);
+                profile.save();
             });
 
             req.session.nickname = req.body.nickname;
